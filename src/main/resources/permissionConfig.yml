@@ -1,0 +1,42 @@
+ChatCo:
+  ColorCodes:
+    White: true
+    Green: true
+    Blue: true
+    Red: true
+    Aqua: true
+    Gold: true
+    Yellow: true
+    Gray: true
+    Black: true
+    Dark_Green: true
+    Dark_Red: true
+    Dark_Gray: true
+    Dark_Blue: true
+    Dark_Aqua: true
+    Dark_Purple: true
+    Light_Purple: true
+    Bold: true
+    Italic: true
+    Underline: true
+    Strikethrough: true
+  ChatPrefixes:
+    Green: true
+    Blue: true
+    Red: true
+    Aqua: true
+    Gold: true
+    Yellow: true
+    Gray: true
+    Black: true
+    Dark_Green: true
+    Dark_Red: true
+    Dark_Gray: true
+    Dark_Blue: true
+    Dark_Aqua: true
+    Dark_Purple: true
+    Light_Purple: true
+    Bold: true
+    Italic: true
+    Underline: true
+    Strikethrough: true

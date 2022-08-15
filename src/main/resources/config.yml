@@ -1,0 +1,56 @@
+ChatCo:
+  toggleChatEnabled: true
+  ignoresEnabled: true
+  ignoreMessageEnabled: true
+  chatDisabledMessageEnabled: true
+  SpoilersEnabled: false
+  WhisperChangesEnabled: true
+  NewCommands: true
+  ReplyCommands: true
+  WhisperLog: false
+  WhisperMonitoring: true
+  WhisperFormat:
+    Receive: "*LIGHT_PURPLE*SENDER whispers: "
+    Send: "*LIGHT_PURPLE*To RECEIVER: "
+  ChatPrefixes:  
+    Green: ">"
+    Blue: "!#"
+    Red: "!#"
+    Aqua: "!#"
+    Gold: "!#"
+    Yellow: "!#"
+    Gray: "!#"
+    Black: "!#"
+    Dark_Green: "!#"
+    Dark_Red: "!#"
+    Dark_Gray: "!#"
+    Dark_Blue: "!#"
+    Dark_Aqua: "!#"
+    Dark_Purple: "!#"
+    Light_Purple: "!#"
+    Italic: "!#"
+    Underline: "!#"
+    Bold: "!#"
+    Strikethrough: "!#"
+  
+  ChatColors:
+    White: "!#"
+    Green: "!#"
+    Blue: "!#"
+    Red: "!#"
+    Aqua: "!#"
+    Gold: "!#"
+    Yellow: "!#"
+    Gray: "!#"
+    Black: "!#"
+    Dark_Green: "!#"
+    Dark_Red: "!#"
+    Dark_Gray: "!#"
+    Dark_Blue: "!#"
+    Dark_Aqua: "!#"
+    Dark_Purple: "!#"
+    Light_Purple: "!#"
+    Italic: "!#"
+    Underline: "!#"
+    Bold: "!#"
+    Strikethrough: "!#"
