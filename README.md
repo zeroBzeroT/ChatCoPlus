@@ -1,5 +1,11 @@
 # ChatCo
 
+[![discord](https://img.shields.io/discord/843551077759844362?logo=discord)](https://discord.gg/7tW8ZAtGr5)
+[![reddit](https://img.shields.io/reddit/subreddit-subscribers/0b0t)](https://old.reddit.com/r/0b0t/)
+[![release](https://github.com/zeroBzeroT/ChatCo/actions/workflows/release.yml/badge.svg)](https://github.com/zeroBzeroT/ChatCo/actions/workflows/release.yml)
+
+---
+
 **ChatCo is a simple chat plugin which has the following features:**
 
 - Players can customize their chat message using various prefixes. As an example putting an '>' before a chat message
