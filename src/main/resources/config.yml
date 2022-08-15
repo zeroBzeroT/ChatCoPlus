@@ -12,7 +12,7 @@ ChatCo:
   WhisperFormat:
     Receive: "*LIGHT_PURPLE*SENDER whispers: "
     Send: "*LIGHT_PURPLE*To RECEIVER: "
-  ChatPrefixes:  
+  ChatPrefixes:
     Green: ">"
     Blue: "!#"
     Red: "!#"

@@ -47,5 +47,5 @@ Players can see who they have ignored by typing /ignorelist in the chat.
 Ignore and chat-toggling does not work with /me. Do consider disabling /me by using a plugin such as this one: http://goo.gl/IiqQE
 
 ****REPLYING TO WHISPERS****
-ChatCo.ReplyCommands has to be set to true for replys to work.
+ChatCo.ReplyCommands has to be set to true for replies to work.
 Players can reply to whoever whispered them last by typing /r <message> or /reply <message>

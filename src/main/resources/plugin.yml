@@ -1,111 +1,113 @@
 name: ChatCo
-main: com.gmail.fyrvelm.ChatCo.ChatCo
-version: 0.23
+version: ${project.version}
+main: com.gmail.fyrvelm.chatco.ChatCo
+authors:
+  - jj20051
+  - bierdosenhalter
 commands:
-   togglechat:
-      description: enables or disables chat for the player.
-      usage: /toggleechat to disable or enable the chat.
-   toggletells:
-      description: enables or disables whispers for the player.
-      usage: /toggletells to disable or enable whispers.
-   ignore:
-      description: allows a player to ignore another player.
-      usage: /ignore <playername>.
-   ignorelist:
-      description: Returns a list of all currently ignored players.
-      usage: /ignorelist
-   chatco:
-      description: enables or disables whispers and spoilers.
-      permission:
-      usage: Only console input accepted. 'e' enables, 'd' disables. chatco whispers e/d, chatco spoilers e/d     
+  togglechat:
+    description: enables or disables chat for the player.
+    usage: /toggleechat to disable or enable the chat.
+  toggletells:
+    description: enables or disables whispers for the player.
+    usage: /toggletells to disable or enable whispers.
+  ignore:
+    description: allows a player to ignore another player.
+    usage: /ignore <playername>.
+  ignorelist:
+    description: Returns a list of all currently ignored players.
+    usage: /ignorelist
+  chatco:
+    description: enables or disables whispers and spoilers.
+    usage: Only console input accepted. 'e' enables, 'd' disables. chatco whispers e/d, chatco spoilers e/d
 permissions:
-   ChatCo.ChatPrefixes.Green:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ChatPrefixes.Blue:
-      description: Allows you to use to use blue prefixes in chat
-      default: false
-   ChatCo.ChatPrefixes.Red:
-      description: Allows you to use to use red prefixes in chat
-      default: false
-   ChatCo.ChatPrefixes.Aqua:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ChatPrefixes.Gold:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ChatPrefixes.Yellow:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ChatPrefixes.Gray:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ChatPrefixes.Black:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ChatPrefixes.Dark_Green:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ChatPrefixes.Dark_Red:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ChatPrefixes.Dark_Gray:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ChatPrefixes.Dark_Blue:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ChatPrefixes.Dark_Aqua:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ChatPrefixes.Dark_Purple:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ChatPrefixes.Light_Purple:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ColorCodes.Green:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ColorCodes.Blue:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ColorCodes.Red:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ColorCodes.Aqua:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ColorCodes.Gold:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ColorCodes.Yellow:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ColorCodes.Gray:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ColorCodes.Black:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ColorCodes.Dark_Green:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ColorCodes.Dark_Red:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ColorCodes.Dark_Gray:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ColorCodes.Dark_Blue:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ColorCodes.Dark_Aqua:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ColorCodes.Dark_Purple:
-      description: Allows you to use to use green prefixes in chat
-      default: false
-   ChatCo.ColorCodes.Light_Purple:
-      description: Allows you to use to use green prefixes in chat
-      default: false
+  ChatCo.ChatPrefixes.Green:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ChatPrefixes.Blue:
+    description: Allows you to use to use blue prefixes in chat
+    default: false
+  ChatCo.ChatPrefixes.Red:
+    description: Allows you to use to use red prefixes in chat
+    default: false
+  ChatCo.ChatPrefixes.Aqua:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ChatPrefixes.Gold:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ChatPrefixes.Yellow:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ChatPrefixes.Gray:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ChatPrefixes.Black:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ChatPrefixes.Dark_Green:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ChatPrefixes.Dark_Red:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ChatPrefixes.Dark_Gray:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ChatPrefixes.Dark_Blue:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ChatPrefixes.Dark_Aqua:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ChatPrefixes.Dark_Purple:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ChatPrefixes.Light_Purple:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ColorCodes.Green:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ColorCodes.Blue:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ColorCodes.Red:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ColorCodes.Aqua:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ColorCodes.Gold:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ColorCodes.Yellow:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ColorCodes.Gray:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ColorCodes.Black:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ColorCodes.Dark_Green:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ColorCodes.Dark_Red:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ColorCodes.Dark_Gray:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ColorCodes.Dark_Blue:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ColorCodes.Dark_Aqua:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ColorCodes.Dark_Purple:
+    description: Allows you to use to use green prefixes in chat
+    default: false
+  ChatCo.ColorCodes.Light_Purple:
+    description: Allows you to use to use green prefixes in chat
+    default: false

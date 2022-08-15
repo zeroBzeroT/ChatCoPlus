@@ -1,32 +1,27 @@
-package com.gmail.fyrvelm.ChatCo;
+package com.gmail.fyrvelm.chatco;
 
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.EventHandler;
-import java.io.IOException;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import java.io.File;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Listener;
 
-public class CCAllChat implements Listener
-{
-    public ChatCo plugin;
+import java.io.File;
+import java.io.IOException;
+
+public class CCAllChat implements Listener {
+    private static final String CANCEL = "14CANCELIMMEDIATELY14712381230412A42088";
+    public final ChatCo plugin;
     private FileConfiguration permissionConfig;
-    private File customConfig;
-    private static String CANCEL;
-    
-    static {
-        CCAllChat.CANCEL = "14CANCELIMMEDIATELY14712381230412A42088";
-    }
-    
+
     public CCAllChat(final ChatCo plugin) {
         this.plugin = plugin;
     }
-    
+
     public String ColorManager(String msg, final Player player) {
         if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Green") || player.hasPermission("ChatCo.ChatPrefixes.Green")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Green").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Green"))) {
             msg = ChatColor.GREEN + msg;
@@ -87,7 +82,7 @@ public class CCAllChat implements Listener
         }
         return msg;
     }
-    
+
     public String ColorCodeManager(String data, final Player player) {
         if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.White") || player.hasPermission("ChatCo.ColorCodes.White")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.White").equals("!#")) {
             data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.White"), ChatColor.WHITE.toString());
@@ -154,45 +149,44 @@ public class CCAllChat implements Listener
         }
         return data;
     }
-    
-    @EventHandler
-    public void onPlayerChat(final AsyncPlayerChatEvent event) throws IOException {
-        if (event.isCancelled()) {
-            return;
-        }
-        this.customConfig = ChatCo.Configuration2;
-        this.permissionConfig = (FileConfiguration)YamlConfiguration.loadConfiguration(this.customConfig);
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerChat(final AsyncPlayerChatEvent event) {
+        File customConfig = ChatCo.Configuration2;
+        this.permissionConfig = YamlConfiguration.loadConfiguration(customConfig);
         final Player player = event.getPlayer();
         final Player[] recipients = event.getRecipients().toArray(new Player[0]);
-        CCPlayer cp = null;
-        for (int i = 0; i < recipients.length; ++i) {
+        CCPlayer cp;
+
+        for (Player recipient : recipients) {
             try {
-                cp = this.plugin.getCCPlayer(recipients[i]);
-            }
-            catch (IOException e) {
+                cp = this.plugin.getCCPlayer(recipient);
+
+                if ((cp.chatDisabled && this.plugin.checkForChatDisable) || (cp.isIgnored(player.getName()) && this.plugin.checkForIgnores)) {
+                    event.getRecipients().remove(recipient);
+                }
+            } catch (IOException | NullPointerException e) {
                 e.printStackTrace();
             }
-            if ((cp.chatDisabled && this.plugin.checkForChatDisable) || (cp.isIgnored(player.getName()) && this.plugin.checkForIgnores)) {
-                event.getRecipients().remove(recipients[i]);
-            }
         }
+
         String msg = this.ColorManager(event.getMessage(), player);
         msg = this.ColorCodeManager(msg, player);
-        if (msg == CCAllChat.CANCEL) {
+
+        if (msg.equals(CCAllChat.CANCEL)) {
             event.setCancelled(true);
-        }
-        else {
+        } else {
             event.setMessage(msg);
         }
     }
-    
+
     @EventHandler
     public void onPlayerQuit(final PlayerQuitEvent e) {
-        this.plugin.playerlist.remove(e.getPlayer());
+        this.plugin.remove(e.getPlayer());
     }
-    
+
     @EventHandler
     public void onPlayerKick(final PlayerKickEvent e) {
-        this.plugin.playerlist.remove(e.getPlayer());
+        this.plugin.remove(e.getPlayer());
     }
 }

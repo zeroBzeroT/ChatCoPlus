@@ -7,12 +7,12 @@
 - Players can whisper other players (defaults to a purple color).
 - Players can ignore another player (works for both world and whisper chat). Ignore lists are persistent between logins.
   Players can also unignore a previously ignored player.
-- Allows for a cusomizable spoiler text system (who wants to ruin the walking dead for everyone?).
+- Allows for a customizable spoiler text system (who wants to ruin the walking dead for everyone?).
 - Players can toggle chat on/off.
 - Full permission support so that you can limit who has access to what colors / features.
 - Allows the administrator to log whispers between players.
 
-**Popular servers known (or thought) to be running this plugin:**
+**Popular servers known or thought to be running this plugin:**
 
 - 9b9t.com
 - Anarchy.pw
@@ -78,7 +78,7 @@ You can customize the appearance of whispers.
 
 - Fully Async Chat
 - Groups?
-- Customizeable Death Messages
+- Customizable Death Messages
 - Last time a player was seen online?
 
 **Minecraft Versions (Confirmed Working):**
