@@ -6,7 +6,7 @@
 
     <groupId>com.gmail.fyrvelm.chatco</groupId>
     <artifactId>ChatCo</artifactId>
-    <version>0.25</version>
+    <version>0.26</version>
     <packaging>jar</packaging>
 
     <name>ChatCo</name>

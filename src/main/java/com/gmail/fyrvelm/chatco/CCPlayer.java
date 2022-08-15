@@ -13,16 +13,18 @@ public class CCPlayer {
     public boolean chatDisabled;
     public boolean tellsDisabled;
     public String LastMessenger;
+    public String LastReceiver;
     private File IgnoreList;
     private List<String> ignores;
 
     public CCPlayer(final Player p, final String pN) throws IOException {
-        this.player = p;
-        this.playerName = pN;
-        this.chatDisabled = false;
-        this.tellsDisabled = false;
-        this.LastMessenger = null;
-        this.saveIgnoreList("");
+        player = p;
+        playerName = pN;
+        chatDisabled = false;
+        tellsDisabled = false;
+        LastMessenger = null;
+        LastReceiver = null;
+        saveIgnoreList(""); // "" means only create the file
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -61,6 +63,15 @@ public class CCPlayer {
         this.updateIgnoreList();
     }
 
+    public void unIgnoreAll() throws IOException {
+        final FileWriter fwo = new FileWriter(this.IgnoreList, false);
+        final BufferedWriter bwo = new BufferedWriter(fwo);
+        bwo.flush();
+        bwo.close();
+
+        this.updateIgnoreList();
+    }
+
     public Player getLastMessenger() {
         if (this.LastMessenger != null) {
             return Bukkit.getPlayerExact(this.LastMessenger);
@@ -72,6 +83,19 @@ public class CCPlayer {
     public void setLastMessenger(final Player sender) {
         this.LastMessenger = sender.getName();
     }
+
+    public Player getLastReceiver() {
+        if (this.LastReceiver != null) {
+            return Bukkit.getPlayerExact(this.LastReceiver);
+        }
+
+        return null;
+    }
+
+    public void setLastReceiver(final Player sender) {
+        this.LastReceiver = sender.getName();
+    }
+
 
     private void updateIgnoreList() throws IOException {
         final FileInputStream file = new FileInputStream(this.IgnoreList);

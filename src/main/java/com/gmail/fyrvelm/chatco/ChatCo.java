@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class ChatCo extends JavaPlugin {
-    public static File Configuration2;
+    public static File PermissionConfig;
     public static File WhisperLog;
     public static File dataFolder;
     private static File Configuration;
@@ -102,7 +102,7 @@ public class ChatCo extends JavaPlugin {
     private void checkFiles() {
         ChatCo.dataFolder = this.getDataFolder();
         ChatCo.Configuration = new File(ChatCo.dataFolder, "config.yml");
-        ChatCo.Configuration2 = new File(ChatCo.dataFolder, "permissionConfig.yml");
+        ChatCo.PermissionConfig = new File(ChatCo.dataFolder, "permissionConfig.yml");
         ChatCo.WhisperLog = new File(ChatCo.dataFolder, "whisperlog.txt");
         ChatCo.Help = new File(ChatCo.dataFolder, "help.txt");
 
@@ -120,9 +120,9 @@ public class ChatCo extends JavaPlugin {
             this.saveDefaultConfig();
         }
 
-        if (!ChatCo.Configuration2.exists()) {
-            ChatCo.Configuration2.getParentFile().mkdirs();
-            this.copy(this.getResource("permissionConfig.yml"), ChatCo.Configuration2);
+        if (!ChatCo.PermissionConfig.exists()) {
+            ChatCo.PermissionConfig.getParentFile().mkdirs();
+            this.copy(this.getResource("permissionConfig.yml"), ChatCo.PermissionConfig);
         }
     }
 
@@ -156,9 +156,7 @@ public class ChatCo extends JavaPlugin {
                     e.printStackTrace();
                 }
                 return true;
-            }
-
-            if (cmd.getName().equalsIgnoreCase("toggletells")) {
+            } else if (cmd.getName().equalsIgnoreCase("toggletells")) {
                 try {
                     if (this.toggleTells((Player) sender)) {
                         sender.sendMessage(ChatColor.RED + "You will no longer receive tells, type /toggletells to see them again.");
@@ -169,26 +167,29 @@ public class ChatCo extends JavaPlugin {
                     e.printStackTrace();
                 }
                 return true;
-            }
-
-            if (cmd.getName().equalsIgnoreCase("ignore") && this.getConfig().getBoolean("ignoresEnabled", true)) {
+            } else if (cmd.getName().equalsIgnoreCase("unignoreall") && this.getConfig().getBoolean("ignoresEnabled", true)) {
+                try {
+                    this.unIgnoreAll((Player) sender);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return true;
+            } else if (cmd.getName().equalsIgnoreCase("ignore") && this.getConfig().getBoolean("ignoresEnabled", true)) {
                 try {
                     if (args.length < 1) {
-                        sender.sendMessage("You forgot to type the name of the player.");
+                        sender.sendMessage(ChatColor.RED + "You forgot to type the name of the player.");
                         return true;
                     }
 
-                    System.out.println("Attempting to ignore player " + args[0]);
-
                     if (args[0].length() > 16) {
-                        sender.sendMessage("You entered an invalid player name.");
+                        sender.sendMessage(ChatColor.RED + "You entered an invalid player name.");
                         return true;
                     }
 
                     final Player ignorable = Bukkit.getServer().getPlayer(args[0]);
 
                     if (ignorable == null) {
-                        sender.sendMessage("You entered a player who doesn't exist or is offline.");
+                        sender.sendMessage(ChatColor.RED + "You have entered a player who does not exist or is offline.");
                         return true;
                     }
 
@@ -197,19 +198,17 @@ public class ChatCo extends JavaPlugin {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-
-            if (cmd.getName().equalsIgnoreCase("ignorelist") && this.getConfig().getBoolean("ignoresEnabled", true)) {
+            } else if (cmd.getName().equalsIgnoreCase("ignorelist") && this.getConfig().getBoolean("ignoresEnabled", true)) {
                 try {
-                    sender.sendMessage(ChatColor.RED + "Ignored players:");
+                    sender.sendMessage(ChatColor.YELLOW + "Ignored players:");
                     int i = 0;
 
                     for (final String ignores : this.getCCPlayer((Player) sender).getIgnoreList()) {
-                        sender.sendMessage(String.valueOf(ChatColor.RED.toString()) + ChatColor.ITALIC + ignores);
+                        sender.sendMessage(String.valueOf(ChatColor.YELLOW.toString()) + ChatColor.ITALIC + ignores);
                         ++i;
                     }
 
-                    sender.sendMessage(String.valueOf(ChatColor.RED.toString()) + i + " players ignored.");
+                    sender.sendMessage(String.valueOf(ChatColor.YELLOW.toString()) + i + " players ignored.");
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -220,7 +219,7 @@ public class ChatCo extends JavaPlugin {
         if (args.length > 0) {
             if (cmd.getName().equalsIgnoreCase("chatco")) {
                 if (args[1] == null) {
-                    sender.sendMessage("You forgot to specify whether you wanted to enable or disable the component (chatco component e/ed)");
+                    sender.sendMessage(ChatColor.RED + "You forgot to specify whether you wanted to enable or disable the component (/chatco <component> <e|d>)");
                     return true;
                 }
 
@@ -299,7 +298,7 @@ public class ChatCo extends JavaPlugin {
     }
 
     private void ignorePlayer(final Player p, final String target) throws IOException {
-        String message = String.valueOf(ChatColor.RED.toString()) + ChatColor.ITALIC + target + ChatColor.RESET + ChatColor.RED;
+        String message = String.valueOf(ChatColor.YELLOW.toString()) + ChatColor.ITALIC + target + ChatColor.RESET + ChatColor.YELLOW;
 
         if (this.getCCPlayer(p).isIgnored(target)) {
             message = message + " un-ignored.";
@@ -309,6 +308,12 @@ public class ChatCo extends JavaPlugin {
 
         p.sendMessage(message);
         this.getCCPlayer(p).saveIgnoreList(target);
+    }
+
+    private void unIgnoreAll(final Player p) throws IOException {
+        this.getCCPlayer(p).unIgnoreAll();
+        String message = ChatColor.YELLOW + "Ignore list deleted.";
+        p.sendMessage(message);
     }
 
     public void remove(Player player) {

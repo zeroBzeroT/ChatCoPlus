@@ -14,7 +14,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class CCAllChat implements Listener {
-    private static final String CANCEL = "14CANCELIMMEDIATELY14712381230412A42088";
+    // TODO: remove that
+    private static final String CANCEL = "44D88612FEA8A8F36DE82E1278ABB02F";
     public final ChatCo plugin;
     private FileConfiguration permissionConfig;
 
@@ -152,7 +153,7 @@ public class CCAllChat implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerChat(final AsyncPlayerChatEvent event) {
-        File customConfig = ChatCo.Configuration2;
+        File customConfig = ChatCo.PermissionConfig;
         this.permissionConfig = YamlConfiguration.loadConfiguration(customConfig);
         final Player player = event.getPlayer();
         final Player[] recipients = event.getRecipients().toArray(new Player[0]);

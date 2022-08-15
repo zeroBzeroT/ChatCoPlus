@@ -5,7 +5,7 @@ To change a prefix or color code, simply replace the contents within the "" afte
 To disable a color code or prefix, simply replace the contents within the "" with "!#", e.g. Green: "!#"
 After changing a color code or prefix, the plugin may have to be reloaded.
 
-Whisperlogs are saved in whisperlog.txt if whisperlogging is enabled.
+Whisper logs are saved in whisperlog.txt if whisper logging is enabled.
 Whispers will not show up in the main server log nor in the command window running the server if WhisperMonitoring is set to false in the config, true by default.
 
 ****USING PERMISSIONS****
