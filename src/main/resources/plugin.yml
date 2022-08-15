@@ -4,6 +4,7 @@ main: com.gmail.fyrvelm.chatco.ChatCo
 authors:
   - jj20051
   - bierdosenhalter
+description: An efficient chat system with green-text, ignore, whispers and chat logging.
 commands:
   togglechat:
     description: enables or disables chat for the player.

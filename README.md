@@ -17,6 +17,7 @@
 - 9b9t.com
 - Anarchy.pw
 - 2b2t.net
+- 0b0t.org
 
 **ADMINISTRATIVE COMMANDS (only console input is accepted):**
 
@@ -83,6 +84,7 @@ You can customize the appearance of whispers.
 
 **Minecraft Versions (Confirmed Working):**
 
+- 1.12.2
 - 1.11.2
 - 1.11.0
 - 1.10

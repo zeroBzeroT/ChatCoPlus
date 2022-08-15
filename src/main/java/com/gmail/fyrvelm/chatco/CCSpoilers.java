@@ -14,6 +14,7 @@ public class CCSpoilers implements Listener {
         this.Spoiler = new String[5];
     }
 
+    @SuppressWarnings("ManualArrayCopy")
     @EventHandler
     public void onPlayerChat(final AsyncPlayerChatEvent event) {
         if (event.isCancelled()) {
