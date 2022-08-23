@@ -1,15 +1,16 @@
-package com.gmail.fyrvelm.chatco;
+package org.zeroBzeroT.chatCo;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-public class CCPlayer {
-    public final Player player;
+public class ChatPlayer {
+    public final org.bukkit.entity.Player player;
     public final String playerName;
+    public final UUID playerUUID;
     public boolean chatDisabled;
     public boolean tellsDisabled;
     public String LastMessenger;
@@ -17,9 +18,10 @@ public class CCPlayer {
     private File IgnoreList;
     private List<String> ignores;
 
-    public CCPlayer(final Player p, final String pN) throws IOException {
+    public ChatPlayer(final org.bukkit.entity.Player p) throws IOException {
         player = p;
-        playerName = pN;
+        playerName = p.getName();
+        playerUUID = p.getUniqueId();
         chatDisabled = false;
         tellsDisabled = false;
         LastMessenger = null;
@@ -29,7 +31,12 @@ public class CCPlayer {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void saveIgnoreList(final String p) throws IOException {
-        this.IgnoreList = new File(ChatCo.dataFolder, "/ignorelists/" + this.playerName + ".txt");
+        File oldIgnores = new File(Main.dataFolder, "/ignorelists/" + this.playerName + ".txt");
+        this.IgnoreList = new File(Main.dataFolder, "/ignorelists/" + this.playerUUID + ".txt");
+
+        if (oldIgnores.exists()) {
+            oldIgnores.renameTo(this.IgnoreList);
+        }
 
         if (!this.IgnoreList.exists()) {
             this.IgnoreList.getParentFile().mkdir();
@@ -72,7 +79,7 @@ public class CCPlayer {
         this.updateIgnoreList();
     }
 
-    public Player getLastMessenger() {
+    public org.bukkit.entity.Player getLastMessenger() {
         if (this.LastMessenger != null) {
             return Bukkit.getPlayerExact(this.LastMessenger);
         }
@@ -80,11 +87,11 @@ public class CCPlayer {
         return null;
     }
 
-    public void setLastMessenger(final Player sender) {
+    public void setLastMessenger(final org.bukkit.entity.Player sender) {
         this.LastMessenger = sender.getName();
     }
 
-    public Player getLastReceiver() {
+    public org.bukkit.entity.Player getLastReceiver() {
         if (this.LastReceiver != null) {
             return Bukkit.getPlayerExact(this.LastReceiver);
         }
@@ -92,10 +99,9 @@ public class CCPlayer {
         return null;
     }
 
-    public void setLastReceiver(final Player sender) {
+    public void setLastReceiver(final org.bukkit.entity.Player sender) {
         this.LastReceiver = sender.getName();
     }
-
 
     private void updateIgnoreList() throws IOException {
         final FileInputStream file = new FileInputStream(this.IgnoreList);

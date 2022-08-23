@@ -1,4 +1,4 @@
-package com.gmail.fyrvelm.chatco;
+package org.zeroBzeroT.chatCo;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -7,10 +7,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-public class CCSpoilers implements Listener {
+public class Spoilers implements Listener {
     final String[] Spoiler;
 
-    public CCSpoilers() {
+    public Spoilers() {
         this.Spoiler = new String[5];
     }
 

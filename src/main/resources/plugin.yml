@@ -1,6 +1,6 @@
 name: ChatCo
 version: ${project.version}
-main: com.gmail.fyrvelm.chatco.ChatCo
+main: org.zeroBzeroT.chatCo.Main
 authors:
   - jj20051
   - bierdosenhalter

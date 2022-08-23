@@ -1,9 +1,8 @@
-package com.gmail.fyrvelm.chatco;
+package org.zeroBzeroT.chatCo;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -13,17 +12,17 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.io.File;
 import java.io.IOException;
 
-public class CCAllChat implements Listener {
+public class PublicChat implements Listener {
     // TODO: remove that
     private static final String CANCEL = "44D88612FEA8A8F36DE82E1278ABB02F";
-    public final ChatCo plugin;
+    public final Main plugin;
     private FileConfiguration permissionConfig;
 
-    public CCAllChat(final ChatCo plugin) {
+    public PublicChat(final Main plugin) {
         this.plugin = plugin;
     }
 
-    public String ColorManager(String msg, final Player player) {
+    public String ColorManager(String msg, final org.bukkit.entity.Player player) {
         if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Green") || player.hasPermission("ChatCo.ChatPrefixes.Green")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Green").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Green"))) {
             msg = ChatColor.GREEN + msg;
         }
@@ -84,7 +83,7 @@ public class CCAllChat implements Listener {
         return msg;
     }
 
-    public String ColorCodeManager(String data, final Player player) {
+    public String ColorCodeManager(String data, final org.bukkit.entity.Player player) {
         if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.White") || player.hasPermission("ChatCo.ColorCodes.White")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.White").equals("!#")) {
             data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.White"), ChatColor.WHITE.toString());
         }
@@ -146,20 +145,20 @@ public class CCAllChat implements Listener {
             data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Strikethrough"), ChatColor.STRIKETHROUGH.toString());
         }
         if (data.length() == 2 && (data.contains(ChatColor.WHITE.toString()) || data.contains(ChatColor.RED.toString()) || data.contains(ChatColor.BLACK.toString()) || data.contains(ChatColor.DARK_RED.toString()) || data.contains(ChatColor.DARK_GRAY.toString()) || data.contains(ChatColor.DARK_BLUE.toString()) || data.contains(ChatColor.DARK_PURPLE.toString()) || data.contains(ChatColor.BLUE.toString()) || data.contains(ChatColor.LIGHT_PURPLE.toString()) || data.contains(ChatColor.DARK_GREEN.toString()) || data.contains(ChatColor.GOLD.toString()) || data.contains(ChatColor.GREEN.toString()) || data.contains(ChatColor.YELLOW.toString()) || data.contains(ChatColor.DARK_AQUA.toString()) || data.contains(ChatColor.AQUA.toString()) || data.contains(ChatColor.GRAY.toString()) || data.contains(ChatColor.BOLD.toString()) || data.contains(ChatColor.ITALIC.toString()) || data.contains(ChatColor.UNDERLINE.toString()) || data.contains(ChatColor.STRIKETHROUGH.toString()))) {
-            return CCAllChat.CANCEL;
+            return PublicChat.CANCEL;
         }
         return data;
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerChat(final AsyncPlayerChatEvent event) {
-        File customConfig = ChatCo.PermissionConfig;
+        File customConfig = Main.PermissionConfig;
         this.permissionConfig = YamlConfiguration.loadConfiguration(customConfig);
-        final Player player = event.getPlayer();
-        final Player[] recipients = event.getRecipients().toArray(new Player[0]);
-        CCPlayer cp;
+        final org.bukkit.entity.Player player = event.getPlayer();
+        final org.bukkit.entity.Player[] recipients = event.getRecipients().toArray(new org.bukkit.entity.Player[0]);
+        ChatPlayer cp;
 
-        for (Player recipient : recipients) {
+        for (org.bukkit.entity.Player recipient : recipients) {
             try {
                 cp = this.plugin.getCCPlayer(recipient);
 
@@ -174,7 +173,7 @@ public class CCAllChat implements Listener {
         String msg = this.ColorManager(event.getMessage(), player);
         msg = this.ColorCodeManager(msg, player);
 
-        if (msg.equals(CCAllChat.CANCEL)) {
+        if (msg.equals(PublicChat.CANCEL)) {
             event.setCancelled(true);
         } else {
             event.setMessage(msg);

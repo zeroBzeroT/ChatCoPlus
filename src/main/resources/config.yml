@@ -33,7 +33,6 @@ ChatCo:
     Underline: "!#"
     Bold: "!#"
     Strikethrough: "!#"
-  
   ChatColors:
     White: "!#"
     Green: "!#"

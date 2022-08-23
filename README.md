@@ -1,12 +1,14 @@
-# ChatCo
+# ChatCoPlus
 
 [![discord](https://img.shields.io/discord/843551077759844362?logo=discord)](https://discord.gg/7tW8ZAtGr5)
 [![reddit](https://img.shields.io/reddit/subreddit-subscribers/0b0t)](https://old.reddit.com/r/0b0t/)
-[![release](https://github.com/zeroBzeroT/ChatCo/actions/workflows/release.yml/badge.svg)](https://github.com/zeroBzeroT/ChatCo/actions/workflows/release.yml)
+[![release](https://github.com/zeroBzeroT/ChatCoPlus/actions/workflows/release.yml/badge.svg)](https://github.com/zeroBzeroT/ChatCoPlus/actions/workflows/release.yml)
 
 ---
 
-**ChatCo is a simple chat plugin which has the following features:**
+ChatCoPlus is a fork of the famous chat plugin ChatCo created by [jj20051](https://github.com/WiredTombstone), who is the founder and current owner of 9b9t.
+
+**ChatCoPlus has the following features:**
 
 - Players can customize their chat message using various prefixes. As an example putting an '>' before a chat message
   will turn the text green (green-text). (Note: Does not change the color of player names).
@@ -16,7 +18,7 @@
 - Allows for a customizable spoiler text system (who wants to ruin the walking dead for everyone?).
 - Players can toggle chat on/off.
 - Full permission support so that you can limit who has access to what colors / features.
-- Allows the administrator to log whispers between players. (Could be against EU law.)
+- Allows the administrator to log whispers between players. (Could be against local law.)
 
 **Popular servers known or thought to be running this plugin:**
 
@@ -69,9 +71,9 @@ You can customize the appearance of whispers.
 - Use UUIDs for ignore lists (and convert old ones)
 - Remove redundant code
 - Fully Async Chat
-- Groups?
+- Groups
 - Customizable Death Messages
-- Last time a player was seen online?
+- Last time a player was seen online
 
 **Minecraft Versions (Confirmed Working):**
 

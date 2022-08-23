@@ -1,10 +1,9 @@
-package com.gmail.fyrvelm.chatco;
+package org.zeroBzeroT.chatCo;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,23 +16,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-public class ChatCo extends JavaPlugin {
+public class Main extends JavaPlugin {
     public static File PermissionConfig;
     public static File WhisperLog;
     public static File dataFolder;
     private static File Configuration;
     private static File Help;
-    public final Collection<CCPlayer> playerList;
-    private final CCAllChat allChat;
-    private final CCSpoilers spoilerListener;
-    private final CCWhispers whisperListener;
+    public final Collection<ChatPlayer> playerList;
+    private final PublicChat publicChat;
+    private final Spoilers spoilerListener;
+    private final Whispers whisperListener;
     public boolean checkForChatDisable;
     public boolean checkForIgnores;
 
-    public ChatCo() {
-        this.allChat = new CCAllChat(this);
-        this.spoilerListener = new CCSpoilers();
-        this.whisperListener = new CCWhispers(this);
+    public Main() {
+        this.publicChat = new PublicChat(this);
+        this.spoilerListener = new Spoilers();
+        this.whisperListener = new Whispers(this);
         this.checkForChatDisable = false;
         this.checkForIgnores = false;
         this.playerList = Collections.synchronizedCollection(new ArrayList<>());
@@ -47,7 +46,7 @@ public class ChatCo extends JavaPlugin {
         this.checkFiles();
         this.readConfig(0);
         final PluginManager pm = this.getServer().getPluginManager();
-        pm.registerEvents(this.allChat, this);
+        pm.registerEvents(this.publicChat, this);
 
         if (this.getConfig().getBoolean("ChatCo.chatDisableEnabled", true)) {
             this.checkForChatDisable = true;
@@ -100,29 +99,29 @@ public class ChatCo extends JavaPlugin {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void checkFiles() {
-        ChatCo.dataFolder = this.getDataFolder();
-        ChatCo.Configuration = new File(ChatCo.dataFolder, "config.yml");
-        ChatCo.PermissionConfig = new File(ChatCo.dataFolder, "permissionConfig.yml");
-        ChatCo.WhisperLog = new File(ChatCo.dataFolder, "whisperlog.txt");
-        ChatCo.Help = new File(ChatCo.dataFolder, "help.txt");
+        Main.dataFolder = this.getDataFolder();
+        Main.Configuration = new File(Main.dataFolder, "config.yml");
+        Main.PermissionConfig = new File(Main.dataFolder, "permissionConfig.yml");
+        Main.WhisperLog = new File(Main.dataFolder, "whisperlog.txt");
+        Main.Help = new File(Main.dataFolder, "help.txt");
 
-        if (!ChatCo.WhisperLog.exists()) {
-            ChatCo.WhisperLog.getParentFile().mkdirs();
-            this.copy(this.getResource("whisperlog.txt"), ChatCo.WhisperLog);
+        if (!Main.WhisperLog.exists()) {
+            Main.WhisperLog.getParentFile().mkdirs();
+            this.copy(this.getResource("whisperlog.txt"), Main.WhisperLog);
         }
 
-        if (!ChatCo.Help.exists()) {
-            ChatCo.Help.getParentFile().mkdirs();
-            this.copy(this.getResource("help.txt"), ChatCo.Help);
+        if (!Main.Help.exists()) {
+            Main.Help.getParentFile().mkdirs();
+            this.copy(this.getResource("help.txt"), Main.Help);
         }
 
-        if (!ChatCo.Configuration.exists()) {
+        if (!Main.Configuration.exists()) {
             this.saveDefaultConfig();
         }
 
-        if (!ChatCo.PermissionConfig.exists()) {
-            ChatCo.PermissionConfig.getParentFile().mkdirs();
-            this.copy(this.getResource("permissionConfig.yml"), ChatCo.PermissionConfig);
+        if (!Main.PermissionConfig.exists()) {
+            Main.PermissionConfig.getParentFile().mkdirs();
+            this.copy(this.getResource("permissionConfig.yml"), Main.PermissionConfig);
         }
     }
 
@@ -144,10 +143,10 @@ public class ChatCo extends JavaPlugin {
     }
 
     public boolean onCommand(final CommandSender sender, final Command cmd, final String commandLabel, final String[] args) {
-        if (sender instanceof Player) {
+        if (sender instanceof org.bukkit.entity.Player) {
             if (cmd.getName().equalsIgnoreCase("togglechat") && this.getConfig().getBoolean("toggleChatEnabled", true)) {
                 try {
-                    if (this.toggleChat((Player) sender)) {
+                    if (this.toggleChat((org.bukkit.entity.Player) sender)) {
                         sender.sendMessage(ChatColor.RED + "Your chat is now disabled until you type /togglechat or relog.");
                     } else {
                         sender.sendMessage(ChatColor.RED + "Your chat has been re-enabled, type /togglechat to disable it again.");
@@ -158,7 +157,7 @@ public class ChatCo extends JavaPlugin {
                 return true;
             } else if (cmd.getName().equalsIgnoreCase("toggletells")) {
                 try {
-                    if (this.toggleTells((Player) sender)) {
+                    if (this.toggleTells((org.bukkit.entity.Player) sender)) {
                         sender.sendMessage(ChatColor.RED + "You will no longer receive tells, type /toggletells to see them again.");
                     } else {
                         sender.sendMessage(ChatColor.RED + "You now receive tells, type /toggletells to disable them again.");
@@ -169,7 +168,7 @@ public class ChatCo extends JavaPlugin {
                 return true;
             } else if (cmd.getName().equalsIgnoreCase("unignoreall") && this.getConfig().getBoolean("ignoresEnabled", true)) {
                 try {
-                    this.unIgnoreAll((Player) sender);
+                    this.unIgnoreAll((org.bukkit.entity.Player) sender);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -186,29 +185,29 @@ public class ChatCo extends JavaPlugin {
                         return true;
                     }
 
-                    final Player ignorable = Bukkit.getServer().getPlayer(args[0]);
+                    final org.bukkit.entity.Player ignorable = Bukkit.getServer().getPlayer(args[0]);
 
                     if (ignorable == null) {
                         sender.sendMessage(ChatColor.RED + "You have entered a player who does not exist or is offline.");
                         return true;
                     }
 
-                    this.ignorePlayer((Player) sender, args[0]);
+                    this.ignorePlayer((org.bukkit.entity.Player) sender, args[0]);
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else if (cmd.getName().equalsIgnoreCase("ignorelist") && this.getConfig().getBoolean("ignoresEnabled", true)) {
                 try {
-                    sender.sendMessage(ChatColor.YELLOW + "Ignored players:");
+                    sender.sendMessage(ChatColor.WHITE + "Ignored players:");
                     int i = 0;
 
-                    for (final String ignores : this.getCCPlayer((Player) sender).getIgnoreList()) {
-                        sender.sendMessage(String.valueOf(ChatColor.YELLOW.toString()) + ChatColor.ITALIC + ignores);
+                    for (final String ignores : this.getCCPlayer((org.bukkit.entity.Player) sender).getIgnoreList()) {
+                        sender.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + ignores);
                         ++i;
                     }
 
-                    sender.sendMessage(String.valueOf(ChatColor.YELLOW.toString()) + i + " players ignored.");
+                    sender.sendMessage(ChatColor.WHITE + "" + i + " players ignored.");
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -269,19 +268,19 @@ public class ChatCo extends JavaPlugin {
         return false;
     }
 
-    public CCPlayer getCCPlayer(final Player p) throws IOException {
-        for (final CCPlayer cp : this.playerList) {
+    public ChatPlayer getCCPlayer(final org.bukkit.entity.Player p) throws IOException {
+        for (final ChatPlayer cp : this.playerList) {
             if (cp.playerName.equals(p.getName())) {
                 return cp;
             }
         }
 
-        final CCPlayer ccp = new CCPlayer(p, p.getName());
+        final ChatPlayer ccp = new ChatPlayer(p);
         this.playerList.add(ccp);
         return ccp;
     }
 
-    private boolean toggleChat(final Player p) throws IOException {
+    private boolean toggleChat(final org.bukkit.entity.Player p) throws IOException {
         if (this.getCCPlayer(p).chatDisabled) {
             return this.getCCPlayer(p).chatDisabled = false;
         }
@@ -289,7 +288,7 @@ public class ChatCo extends JavaPlugin {
         return this.getCCPlayer(p).chatDisabled = true;
     }
 
-    private boolean toggleTells(final Player p) throws IOException {
+    private boolean toggleTells(final org.bukkit.entity.Player p) throws IOException {
         if (this.getCCPlayer(p).tellsDisabled) {
             return this.getCCPlayer(p).tellsDisabled = false;
         }
@@ -297,26 +296,27 @@ public class ChatCo extends JavaPlugin {
         return this.getCCPlayer(p).tellsDisabled = true;
     }
 
-    private void ignorePlayer(final Player p, final String target) throws IOException {
-        String message = String.valueOf(ChatColor.YELLOW.toString()) + ChatColor.ITALIC + target + ChatColor.RESET + ChatColor.YELLOW;
+    private void ignorePlayer(final org.bukkit.entity.Player p, final String target) throws IOException {
+        String message = ChatColor.WHITE + "Chat messages from " + target + " will be ";
 
         if (this.getCCPlayer(p).isIgnored(target)) {
-            message = message + " un-ignored.";
+            message += " shown";
         } else {
-            message = message + " ignored.";
+            message += " hidden";
         }
 
         p.sendMessage(message);
         this.getCCPlayer(p).saveIgnoreList(target);
     }
 
-    private void unIgnoreAll(final Player p) throws IOException {
+    private void unIgnoreAll(final org.bukkit.entity.Player p) throws IOException {
         this.getCCPlayer(p).unIgnoreAll();
-        String message = ChatColor.YELLOW + "Ignore list deleted.";
+        String message = ChatColor.WHITE + "Ignore list deleted.";
         p.sendMessage(message);
     }
 
-    public void remove(Player player) {
+    public void remove(org.bukkit.entity.Player player) {
         playerList.removeIf(p -> p.player.equals(player));
     }
 }
+

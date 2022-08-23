@@ -1,4 +1,4 @@
-package com.gmail.fyrvelm.chatco;
+package org.zeroBzeroT.chatCo;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,11 +14,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class CCWhispers implements Listener {
+public class Whispers implements Listener {
     public static final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
-    public final ChatCo plugin;
+    public final Main plugin;
 
-    public CCWhispers(final ChatCo plugin) {
+    public Whispers(final Main plugin) {
         this.plugin = plugin;
     }
 
@@ -30,7 +30,7 @@ public class CCWhispers implements Listener {
 
     public void whisperLog(final String text, final String sender) {
         try {
-            final FileWriter fwo = new FileWriter(ChatCo.WhisperLog, true);
+            final FileWriter fwo = new FileWriter(Main.WhisperLog, true);
             final BufferedWriter bwo = new BufferedWriter(fwo);
             bwo.write(now() + " " + sender + ": " + text);
             bwo.newLine();
@@ -89,7 +89,7 @@ public class CCWhispers implements Listener {
             Player target = null;
 
             if (args.length == 1) {
-                sender.sendMessage(ChatColor.YELLOW + "Usage: /l <message>");
+                sender.sendMessage(ChatColor.WHITE + "Usage: /l <message>");
                 event.setCancelled(true);
                 return;
             }
@@ -160,7 +160,7 @@ public class CCWhispers implements Listener {
             Player target = null;
 
             if (args.length == 1) {
-                sender.sendMessage(ChatColor.YELLOW + "Usage: /r <message>");
+                sender.sendMessage(ChatColor.WHITE + "Usage: /r <message>");
                 event.setCancelled(true);
                 return;
             }
@@ -229,7 +229,7 @@ public class CCWhispers implements Listener {
             event.setCancelled(true);
         } else if (args[0].equals("/tell") || args[0].equals("/msg") || args[0].equals("/t") || args[0].equals("/w") || args[0].equals("/whisper") || args[0].equals("/pm")) {
             if (args.length < 3) {
-                sender.sendMessage(ChatColor.YELLOW + "Usage: /w <player> <message>");
+                sender.sendMessage(ChatColor.WHITE + "Usage: /w <player> <message>");
                 event.setCancelled(true);
                 return;
             }
