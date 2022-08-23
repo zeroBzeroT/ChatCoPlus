@@ -51,7 +51,7 @@ public class Spoilers implements Listener {
                 final int numberOfPrints = Character.digit(parser, 15);
 
                 if (numberOfPrints > 5 || numberOfPrints < 1) {
-                    player.sendMessage("The server only stores the last 5 spoilers to have been made.");
+                    player.sendMessage("The server only stores the last 5 spoilers to have been made");
                 } else if (numberOfPrints < 5 && numberOfPrints > 1) {
                     for (int i = 0; i < numberOfPrints; ++i) {
                         player.sendMessage("Spoiler [" + (i + 1) + "]: " + this.Spoiler[i]);

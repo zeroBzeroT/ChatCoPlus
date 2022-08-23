@@ -99,9 +99,9 @@ public class Whispers implements Listener {
             }
 
             if (target == null && this.plugin.getCCPlayer(sender).LastReceiver != null) {
-                sender.sendMessage(ChatColor.RED + "The last person you sent a private message to is offline.");
+                sender.sendMessage(ChatColor.RED + "The last person you sent a private message to is offline");
             } else if (target == null) {
-                sender.sendMessage(ChatColor.RED + "You have not initiated any private message in this session.");
+                sender.sendMessage(ChatColor.RED + "You have not initiated any private message in this session");
             } else {
                 try {
                     if (this.plugin.getCCPlayer(target).tellsDisabled) {
@@ -129,11 +129,11 @@ public class Whispers implements Listener {
                 sender.sendMessage(String.valueOf(senderMessage) + message);
 
                 if (isIgnoring && this.plugin.getConfig().getBoolean("ChatCo.ignoreMessageEnabled", true)) {
-                    sender.sendMessage(ChatColor.RED + target.getName() + " is ignoring you.");
+                    sender.sendMessage(ChatColor.RED + target.getName() + " is ignoring you");
                 }
 
                 if (doNotSend && this.plugin.getConfig().getBoolean("ChatCo.chatDisabledMessageEnabled", true)) {
-                    sender.sendMessage(ChatColor.RED + target.getName() + "'s chat is disabled.");
+                    sender.sendMessage(ChatColor.RED + target.getName() + "'s chat is disabled");
                 }
 
                 if (!doNotSend && !isIgnoring) {
@@ -170,9 +170,9 @@ public class Whispers implements Listener {
             }
 
             if (target == null && this.plugin.getCCPlayer(sender).LastMessenger != null) {
-                sender.sendMessage(ChatColor.RED + "The last person you received a private message from is offline.");
+                sender.sendMessage(ChatColor.RED + "The last person you received a private message from is offline");
             } else if (target == null) {
-                sender.sendMessage(ChatColor.RED + "You have not received any private messages in this session.");
+                sender.sendMessage(ChatColor.RED + "You have not received any private messages in this session");
             } else {
                 try {
                     if (this.plugin.getCCPlayer(target).tellsDisabled) {
@@ -200,11 +200,11 @@ public class Whispers implements Listener {
                 sender.sendMessage(String.valueOf(senderMessage) + message);
 
                 if (isIgnoring && this.plugin.getConfig().getBoolean("ChatCo.ignoreMessageEnabled", true)) {
-                    sender.sendMessage(ChatColor.RED + target.getName() + " is ignoring you.");
+                    sender.sendMessage(ChatColor.RED + target.getName() + " is ignoring you");
                 }
 
                 if (doNotSend && this.plugin.getConfig().getBoolean("ChatCo.chatDisabledMessageEnabled", true)) {
-                    sender.sendMessage(ChatColor.RED + target.getName() + "'s chat is disabled.");
+                    sender.sendMessage(ChatColor.RED + target.getName() + "'s chat is disabled");
                 }
 
                 if (!doNotSend && !isIgnoring) {
@@ -238,7 +238,7 @@ public class Whispers implements Listener {
 
             if (target == null) {
                 event.setCancelled(true);
-                sender.sendMessage(ChatColor.RED + args[1] + " is offline.");
+                sender.sendMessage(ChatColor.RED + args[1] + " is offline");
                 return;
             }
 
@@ -271,11 +271,11 @@ public class Whispers implements Listener {
                 sender.sendMessage(String.valueOf(senderMessage) + message);
 
                 if (isIgnoring && this.plugin.getConfig().getBoolean("ChatCo.ignoreMessageEnabled", true)) {
-                    sender.sendMessage(ChatColor.RED + target.getName() + " is ignoring you.");
+                    sender.sendMessage(ChatColor.RED + target.getName() + " is ignoring you");
                 }
 
                 if (doNotSend && this.plugin.getConfig().getBoolean("ChatCo.chatDisabledMessageEnabled", true)) {
-                    sender.sendMessage(ChatColor.RED + target.getName() + "'s chat is disabled.");
+                    sender.sendMessage(ChatColor.RED + target.getName() + "'s chat is disabled");
                 }
 
                 if (!doNotSend && !isIgnoring) {
@@ -322,11 +322,11 @@ public class Whispers implements Listener {
                     sender.sendMessage(String.valueOf(senderMessage) + message);
 
                     if (isIgnoring && this.plugin.getConfig().getBoolean("ChatCo.ignoreMessageEnabled", true)) {
-                        sender.sendMessage(String.valueOf(ChatColor.RED.toString()) + target + " is ignoring you.");
+                        sender.sendMessage(String.valueOf(ChatColor.RED.toString()) + target + " is ignoring you");
                     }
 
                     if (doNotSend && this.plugin.getConfig().getBoolean("ChatCo.chatDisabledMessageEnabled", true)) {
-                        sender.sendMessage(String.valueOf(ChatColor.RED.toString()) + target + "'s chat is disabled.");
+                        sender.sendMessage(String.valueOf(ChatColor.RED.toString()) + target + "'s chat is disabled");
                     }
 
                     if (!doNotSend && !isIgnoring) {

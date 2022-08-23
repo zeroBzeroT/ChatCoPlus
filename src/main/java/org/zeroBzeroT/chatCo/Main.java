@@ -147,9 +147,9 @@ public class Main extends JavaPlugin {
             if (cmd.getName().equalsIgnoreCase("togglechat") && this.getConfig().getBoolean("toggleChatEnabled", true)) {
                 try {
                     if (this.toggleChat((org.bukkit.entity.Player) sender)) {
-                        sender.sendMessage(ChatColor.RED + "Your chat is now disabled until you type /togglechat or relog.");
+                        sender.sendMessage(ChatColor.RED + "Your chat is now disabled until you type /togglechat or relog");
                     } else {
-                        sender.sendMessage(ChatColor.RED + "Your chat has been re-enabled, type /togglechat to disable it again.");
+                        sender.sendMessage(ChatColor.RED + "Your chat has been re-enabled, type /togglechat to disable it again");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -158,9 +158,9 @@ public class Main extends JavaPlugin {
             } else if (cmd.getName().equalsIgnoreCase("toggletells")) {
                 try {
                     if (this.toggleTells((org.bukkit.entity.Player) sender)) {
-                        sender.sendMessage(ChatColor.RED + "You will no longer receive tells, type /toggletells to see them again.");
+                        sender.sendMessage(ChatColor.RED + "You will no longer receive tells, type /toggletells to see them again");
                     } else {
-                        sender.sendMessage(ChatColor.RED + "You now receive tells, type /toggletells to disable them again.");
+                        sender.sendMessage(ChatColor.RED + "You now receive tells, type /toggletells to disable them again");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -176,19 +176,19 @@ public class Main extends JavaPlugin {
             } else if (cmd.getName().equalsIgnoreCase("ignore") && this.getConfig().getBoolean("ignoresEnabled", true)) {
                 try {
                     if (args.length < 1) {
-                        sender.sendMessage(ChatColor.RED + "You forgot to type the name of the player.");
+                        sender.sendMessage(ChatColor.RED + "You forgot to type the name of the player");
                         return true;
                     }
 
                     if (args[0].length() > 16) {
-                        sender.sendMessage(ChatColor.RED + "You entered an invalid player name.");
+                        sender.sendMessage(ChatColor.RED + "You entered an invalid player name");
                         return true;
                     }
 
                     final org.bukkit.entity.Player ignorable = Bukkit.getServer().getPlayer(args[0]);
 
                     if (ignorable == null) {
-                        sender.sendMessage(ChatColor.RED + "You have entered a player who does not exist or is offline.");
+                        sender.sendMessage(ChatColor.RED + "You have entered a player who does not exist or is offline");
                         return true;
                     }
 
@@ -207,7 +207,7 @@ public class Main extends JavaPlugin {
                         ++i;
                     }
 
-                    sender.sendMessage(ChatColor.WHITE + "" + i + " players ignored.");
+                    sender.sendMessage(ChatColor.WHITE + "" + i + " players ignored");
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -300,9 +300,9 @@ public class Main extends JavaPlugin {
         String message = ChatColor.WHITE + "Chat messages from " + target + " will be ";
 
         if (this.getCCPlayer(p).isIgnored(target)) {
-            message += " shown";
+            message += "shown";
         } else {
-            message += " hidden";
+            message += "hidden";
         }
 
         p.sendMessage(message);
@@ -311,7 +311,7 @@ public class Main extends JavaPlugin {
 
     private void unIgnoreAll(final org.bukkit.entity.Player p) throws IOException {
         this.getCCPlayer(p).unIgnoreAll();
-        String message = ChatColor.WHITE + "Ignore list deleted.";
+        String message = ChatColor.WHITE + "Ignore list deleted";
         p.sendMessage(message);
     }
 
