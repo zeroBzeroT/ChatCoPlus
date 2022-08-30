@@ -1,8 +1,13 @@
 package org.zeroBzeroT.chatCo;
 
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -10,173 +15,95 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.io.File;
-import java.io.IOException;
+
+import static org.zeroBzeroT.chatCo.Utils.componentFromLegacyText;
 
 public class PublicChat implements Listener {
-    // TODO: remove that
-    private static final String CANCEL = "44D88612FEA8A8F36DE82E1278ABB02F";
     public final Main plugin;
-    private FileConfiguration permissionConfig;
+    private final FileConfiguration permissionConfig;
 
     public PublicChat(final Main plugin) {
         this.plugin = plugin;
+        File customConfig = Main.PermissionConfig;
+        this.permissionConfig = YamlConfiguration.loadConfiguration(customConfig);
     }
 
-    public String ColorManager(String msg, final org.bukkit.entity.Player player) {
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Green") || player.hasPermission("ChatCo.ChatPrefixes.Green")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Green").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Green"))) {
-            msg = ChatColor.GREEN + msg;
+    public String replacePrefixColors(String message, final Player player) {
+        for (ChatColor color : ChatColor.values()) {
+            if (this.plugin.getConfig().getString("ChatCo.chatPrefixes." + color.name()) != null && message.startsWith(this.plugin.getConfig().getString("ChatCo.chatPrefixes." + color.name()))) {
+
+                // check for global or player permission
+                if (this.permissionConfig.getBoolean("ChatCo.chatPrefixes." + color.name(), false) || player.hasPermission("ChatCo.chatPrefixes." + color.name())) {
+                    message = color + message;
+                }
+
+                // break here since we found a prefix color code
+                break;
+            }
         }
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Blue") || player.hasPermission("ChatCo.ChatPrefixes.Blue")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Blue").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Blue"))) {
-            msg = ChatColor.BLUE + msg;
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Red") || player.hasPermission("ChatCo.ChatPrefixes.Red")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Red").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Red"))) {
-            msg = ChatColor.RED + msg;
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Aqua") || player.hasPermission("ChatCo.ChatPrefixes.Aqua")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Aqua").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Aqua"))) {
-            msg = ChatColor.AQUA + msg;
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Gold") || player.hasPermission("ChatCo.ChatPrefixes.Gold")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Gold").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Gold"))) {
-            msg = ChatColor.GOLD + msg;
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Yellow") || player.hasPermission("ChatCo.ChatPrefixes.Yellow")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Yellow").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Yellow"))) {
-            msg = ChatColor.YELLOW + msg;
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Gray") || player.hasPermission("ChatCo.ChatPrefixes.Gray")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Gray").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Gray"))) {
-            msg = ChatColor.GRAY + msg;
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Black") || player.hasPermission("ChatCo.ChatPrefixes.Black")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Black").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Black"))) {
-            msg = ChatColor.BLACK + msg;
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Dark_Green") || player.hasPermission("ChatCo.ChatPrefixes.Dark_Green")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Dark_Green").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Dark_Green"))) {
-            msg = ChatColor.DARK_GREEN + msg;
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Dark_Red") || player.hasPermission("ChatCo.ChatPrefixes.Dark_Red")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Dark_Red").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Dark_Red"))) {
-            msg = ChatColor.DARK_RED + msg;
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Dark_Gray") || player.hasPermission("ChatCo.ChatPrefixes.Dark_Gray")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Dark_Gray").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Dark_Gray"))) {
-            msg = ChatColor.DARK_GRAY + msg;
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Dark_Blue") || player.hasPermission("ChatCo.ChatPrefixes.Dark_Blue")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Dark_Blue").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Dark_Blue"))) {
-            msg = ChatColor.DARK_BLUE + msg;
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Dark_Aqua") || player.hasPermission("ChatCo.ChatPrefixes.Dark_Aqua")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Dark_Aqua").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Dark_Aqua"))) {
-            msg = ChatColor.DARK_AQUA + msg;
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Dark_Purple") || player.hasPermission("ChatCo.ChatPrefixes.Dark_Purple")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Dark_Purple").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Dark_Purple"))) {
-            msg = ChatColor.DARK_PURPLE + msg;
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Light_Purple") || player.hasPermission("ChatCo.ChatPrefixes.Light_Purple")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Light_Purple").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Light_Purple"))) {
-            msg = ChatColor.LIGHT_PURPLE + msg;
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Underline") || player.hasPermission("ChatCo.ChatPrefixes.Underline")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Underline").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Underline"))) {
-            msg = ChatColor.UNDERLINE + msg;
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Italic") || player.hasPermission("ChatCo.ChatPrefixes.Italic")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Italic").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Italic"))) {
-            msg = ChatColor.ITALIC + msg;
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Bold") || player.hasPermission("ChatCo.ChatPrefixes.Bold")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Bold").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Bold"))) {
-            msg = ChatColor.BOLD + msg;
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ChatPrefixes.Strikethrough") || player.hasPermission("ChatCo.ChatPrefixes.Strikethrough")) && !this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Strikethrough").equals("!#") && msg.startsWith(this.plugin.getConfig().getString("ChatCo.ChatPrefixes.Strikethrough"))) {
-            msg = ChatColor.STRIKETHROUGH + msg;
-        }
-        return msg;
+
+        return message;
     }
 
-    public String ColorCodeManager(String data, final org.bukkit.entity.Player player) {
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.White") || player.hasPermission("ChatCo.ColorCodes.White")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.White").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.White"), ChatColor.WHITE.toString());
+    public String replaceInlineColors(String message, final Player player) {
+        for (ChatColor color : ChatColor.values()) {
+            if ((this.permissionConfig.getBoolean("ChatCo.chatColors." + color.name(), false) || player.hasPermission("ChatCo.chatColors." + color.name()))
+                    && this.plugin.getConfig().getString("ChatCo.chatColors." + color.name()) != null) {
+                message = message.replace(this.plugin.getConfig().getString("ChatCo.chatColors." + color.name()), color.toString());
+            }
         }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Red") || player.hasPermission("ChatCo.ColorCodes.Red")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Red").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Red"), ChatColor.RED.toString());
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Black") || player.hasPermission("ChatCo.ColorCodes.Black")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Black").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Black"), ChatColor.BLACK.toString());
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Dark_Red") || player.hasPermission("ChatCo.ColorCodes.Dark_Red")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Dark_Red").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Dark_Red"), ChatColor.DARK_RED.toString());
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Dark_Gray") || player.hasPermission("ChatCo.ColorCodes.Dark_Gray")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Dark_Gray").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Dark_Gray"), ChatColor.DARK_GRAY.toString());
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Dark_Blue") || player.hasPermission("ChatCo.ColorCodes.Dark_Blue")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Dark_Blue").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Dark_Blue"), ChatColor.DARK_BLUE.toString());
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Dark_Purple") || player.hasPermission("ChatCo.ColorCodes.Dark_Purple")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Dark_Purple").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Dark_Purple"), ChatColor.DARK_PURPLE.toString());
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Blue") || player.hasPermission("ChatCo.ColorCodes.Blue")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Blue").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Blue"), ChatColor.BLUE.toString());
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Light_Purple") || player.hasPermission("ChatCo.ColorCodes.Light_Purple")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Light_Purple").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Light_Purple"), ChatColor.LIGHT_PURPLE.toString());
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Dark_Green") || player.hasPermission("ChatCo.ColorCodes.Dark_Green")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Dark_Green").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Dark_Green"), ChatColor.DARK_GREEN.toString());
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Gold") || player.hasPermission("ChatCo.ColorCodes.Gold")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Gold").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Gold"), ChatColor.GOLD.toString());
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Green") || player.hasPermission("ChatCo.ColorCodes.Green")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Green").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Green"), ChatColor.GREEN.toString());
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Yellow") || player.hasPermission("ChatCo.ColorCodes.Yellow")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Yellow").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Yellow"), ChatColor.YELLOW.toString());
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Dark_Aqua") || player.hasPermission("ChatCo.ColorCodes.Dark_Aqua")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Dark_Aqua").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Dark_Aqua"), ChatColor.DARK_AQUA.toString());
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Aqua") || player.hasPermission("ChatCo.ColorCodes.Aqua")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Aqua").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Aqua"), ChatColor.AQUA.toString());
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Gray") || player.hasPermission("ChatCo.ColorCodes.Gray")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Gray").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Gray"), ChatColor.GRAY.toString());
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Bold") || player.hasPermission("ChatCo.ColorCodes.Bold")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Bold").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Bold"), ChatColor.BOLD.toString());
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Italic") || player.hasPermission("ChatCo.ColorCodes.Italic")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Italic").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Italic"), ChatColor.ITALIC.toString());
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Underline") || player.hasPermission("ChatCo.ColorCodes.Underline")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Underline").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Underline"), ChatColor.UNDERLINE.toString());
-        }
-        if ((this.permissionConfig.getBoolean("ChatCo.ColorCodes.Strikethrough") || player.hasPermission("ChatCo.ColorCodes.Strikethrough")) && !this.plugin.getConfig().getString("ChatCo.ChatColors.Strikethrough").equals("!#")) {
-            data = data.replace(this.plugin.getConfig().getString("ChatCo.ChatColors.Strikethrough"), ChatColor.STRIKETHROUGH.toString());
-        }
-        if (data.length() == 2 && (data.contains(ChatColor.WHITE.toString()) || data.contains(ChatColor.RED.toString()) || data.contains(ChatColor.BLACK.toString()) || data.contains(ChatColor.DARK_RED.toString()) || data.contains(ChatColor.DARK_GRAY.toString()) || data.contains(ChatColor.DARK_BLUE.toString()) || data.contains(ChatColor.DARK_PURPLE.toString()) || data.contains(ChatColor.BLUE.toString()) || data.contains(ChatColor.LIGHT_PURPLE.toString()) || data.contains(ChatColor.DARK_GREEN.toString()) || data.contains(ChatColor.GOLD.toString()) || data.contains(ChatColor.GREEN.toString()) || data.contains(ChatColor.YELLOW.toString()) || data.contains(ChatColor.DARK_AQUA.toString()) || data.contains(ChatColor.AQUA.toString()) || data.contains(ChatColor.GRAY.toString()) || data.contains(ChatColor.BOLD.toString()) || data.contains(ChatColor.ITALIC.toString()) || data.contains(ChatColor.UNDERLINE.toString()) || data.contains(ChatColor.STRIKETHROUGH.toString()))) {
-            return PublicChat.CANCEL;
-        }
-        return data;
+
+        return message;
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerChat(final AsyncPlayerChatEvent event) {
-        File customConfig = Main.PermissionConfig;
-        this.permissionConfig = YamlConfiguration.loadConfiguration(customConfig);
-        final org.bukkit.entity.Player player = event.getPlayer();
-        final org.bukkit.entity.Player[] recipients = event.getRecipients().toArray(new org.bukkit.entity.Player[0]);
-        ChatPlayer cp;
+        // Set format to the plain message, since the player is not needed
+        event.setFormat("%2$s");
 
-        for (org.bukkit.entity.Player recipient : recipients) {
-            try {
-                cp = this.plugin.getCCPlayer(recipient);
+        // Cancel the event, because the chat is rewritten to system messages
+        event.setCancelled(true);
 
-                if ((cp.chatDisabled && this.plugin.checkForChatDisable) || (cp.isIgnored(player.getName()) && this.plugin.checkForIgnores)) {
-                    event.getRecipients().remove(recipient);
-                }
-            } catch (IOException | NullPointerException e) {
-                e.printStackTrace();
-            }
+        // Plain message
+        final Player player = event.getPlayer();
+        String legacyMessage = this.replacePrefixColors(event.getMessage(), player);
+        legacyMessage = this.replaceInlineColors(legacyMessage, player);
+
+        // Do not send empty messages
+        if (ChatColor.stripColor(legacyMessage).trim().length() == 0) {
+            return;
         }
 
-        String msg = this.ColorManager(event.getMessage(), player);
-        msg = this.ColorCodeManager(msg, player);
+        // Message text
+        TextComponent messageText = componentFromLegacyText(legacyMessage);
 
-        if (msg.equals(PublicChat.CANCEL)) {
-            event.setCancelled(true);
-        } else {
-            event.setMessage(msg);
+        // Sender name
+        TextComponent messageSender = componentFromLegacyText(player.getDisplayName());
+        if (plugin.getConfig().getBoolean("ChatCo.whisperOnClick", true)) {
+            messageSender.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/w " + player.getName() + " "));
+            messageSender.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Whisper to " + player.getName()).create()));
+        }
+
+        // Message
+        TextComponent message = new TextComponent();
+        message.addExtra(componentFromLegacyText("<"));
+        message.addExtra(messageSender);
+        message.addExtra(componentFromLegacyText("> "));
+        message.addExtra(messageText);
+
+        // Send to the players
+        for (Player recipient : event.getRecipients()) {
+            try {
+                ChatPlayer chatPlayer = this.plugin.getChatPlayer(recipient);
+
+                if ((!chatPlayer.chatDisabled || !this.plugin.checkForChatDisable) &&
+                        (!chatPlayer.isIgnored(player.getName()) || !this.plugin.checkForIgnores)) {
+                    recipient.spigot().sendMessage(message);
+                }
+
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
     }
 

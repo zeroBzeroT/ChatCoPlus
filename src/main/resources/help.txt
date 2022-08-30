@@ -6,35 +6,35 @@ To disable a color code or prefix, simply replace the contents within the "" wit
 After changing a color code or prefix, the plugin may have to be reloaded.
 
 Whisper logs are saved in whisperlog.txt if whisper logging is enabled.
-Whispers will not show up in the main server log nor in the command window running the server if WhisperMonitoring is set to false in the config, true by default.
+Whispers will not show up in the main server log nor in the command window running the server if whisperMonitoring is set to false in the config, true by default.
 
 ****USING PERMISSIONS****
 If you are interested in only allowing certain users to use certain color codes or chat prefixes,
 you will have to open "permissionConfig.yml" and set the value of each color code or chat prefix that you want
 to limit usage of to "false".
 The required permissions to use the different color codes or chat prefixes go by the format:
-ChatCo.ChatPrefixes.COLOR: true e.g ChatCo.ChatPrefixes.Green: true
-ChatCo.ColorCodes.COLOR: true e.g. ChatCo.ColorCodes.White: true
+ChatCo.chatPrefixes.COLOR: true e.g ChatCo.chatPrefixes.GREEN: true
+ChatCo.chatColors.COLOR: true e.g. ChatCo.chatColors.WHITE: true
 The permissions are not required to use color codes or chat prefixes if the values in "permissionConfig.yml" are set to true.
 
 ****WHISPER FORMATTING****
-If you want to use a different format for your whispers than the default one, you can do so by changing the nodes "ChatCo.WhisperFormat.Receive/Send".
+If you want to use a different format for your whispers than the default one, you can do so by changing the nodes "ChatCo.whisperFormat.receive/send".
 "Receive" is the message that the person receiving the message sees and "Send" is the message that the person sending the message sees.
 All colors and formatting options are supported in whispers, e.g. if you want your whispers to be blue instead you can change "*LIGHT_PURPLE*" to "*BLUE*".
 "SENDER" and "RECEIVER" are replaced with the corresponding players' names.
 "*NORM*" resets the formatting of the message, useful if you want to remove bold or underlining, keep in mind that this will also remove any colors.
 Example config:
-  WhisperFormat:
-    Receive: '*LIGHT_PURPLE*SENDER whispers:*AQUA* '
-    Send: '*LIGHT_PURPLE*To RECEIVER:*GOLD* '
+  whisperFormat:
+    receive: '%LIGHT_PURPLE%%SENDER% whispers:%AQUA% '
+    send: '%LIGHT_PURPLE%To %RECEIVER%:%GOLD% '
 Another example:
-  WhisperFormat:
-    Receive: '*BLUE**BOLD*SENDER:*NORM**AQUA* '
-    Send: '*LIGHT_PURPLE*To *BOLD*RECEIVER*NORM**LIGHT_PURPLE*:*GOLD* '
+  whisperFormat:
+    receive: '%BLUE%%BOLD%%SENDER%:%RESET%%AQUA% '
+    send: '%LIGHT_PURPLE%To %BOLD%%RECEIVER%%RESET%%LIGHT_PURPLE%:%GOLD% '
 Default Config:
-  WhisperFormat:
-    Receive: "*LIGHT_PURPLE*SENDER whispers: "
-    Send: "*LIGHT_PURPLE*To RECEIVER: "
+  whisperFormat:
+    receive: "%LIGHT_PURPLE%%SENDER% whispers: "
+    send: "%LIGHT_PURPLE%To %RECEIVER%: "
     
 ****IGNORING OTHER PLAYERS AND DISABLING CHAT****
 Ignores and chat-toggling can be disabled by changing the nodes "toggleChatEnabled" and "ignoresEnabled" to false.
@@ -47,5 +47,5 @@ Players can see who they have ignored by typing /ignorelist in the chat.
 Ignore and chat-toggling does not work with /me. Do consider disabling /me by using a plugin such as this one: http://goo.gl/IiqQE
 
 ****REPLYING TO WHISPERS****
-ChatCo.ReplyCommands has to be set to true for replies to work.
+ChatCo.replyCommands has to be set to true for replies to work.
 Players can reply to whoever whispered them last by typing /r <message> or /reply <message>

@@ -1,6 +1,7 @@
 package org.zeroBzeroT.chatCo;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -8,8 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class ChatPlayer {
-    public final org.bukkit.entity.Player player;
-    public final String playerName;
+    public final Player player;
     public final UUID playerUUID;
     public boolean chatDisabled;
     public boolean tellsDisabled;
@@ -18,20 +18,21 @@ public class ChatPlayer {
     private File IgnoreList;
     private List<String> ignores;
 
-    public ChatPlayer(final org.bukkit.entity.Player p) throws IOException {
+    public ChatPlayer(final Player p) throws IOException {
         player = p;
-        playerName = p.getName();
         playerUUID = p.getUniqueId();
         chatDisabled = false;
         tellsDisabled = false;
         LastMessenger = null;
         LastReceiver = null;
-        saveIgnoreList(""); // "" means only create the file
+
+        // create the ignore-list
+        saveIgnoreList("");
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void saveIgnoreList(final String p) throws IOException {
-        File oldIgnores = new File(Main.dataFolder, "/ignorelists/" + this.playerName + ".txt");
+        File oldIgnores = new File(Main.dataFolder, "/ignorelists/" + this.player.getName() + ".txt");
         this.IgnoreList = new File(Main.dataFolder, "/ignorelists/" + this.playerUUID + ".txt");
 
         if (oldIgnores.exists()) {
@@ -79,7 +80,7 @@ public class ChatPlayer {
         this.updateIgnoreList();
     }
 
-    public org.bukkit.entity.Player getLastMessenger() {
+    public Player getLastMessenger() {
         if (this.LastMessenger != null) {
             return Bukkit.getPlayerExact(this.LastMessenger);
         }
@@ -87,11 +88,11 @@ public class ChatPlayer {
         return null;
     }
 
-    public void setLastMessenger(final org.bukkit.entity.Player sender) {
+    public void setLastMessenger(final Player sender) {
         this.LastMessenger = sender.getName();
     }
 
-    public org.bukkit.entity.Player getLastReceiver() {
+    public Player getLastReceiver() {
         if (this.LastReceiver != null) {
             return Bukkit.getPlayerExact(this.LastReceiver);
         }
@@ -99,7 +100,7 @@ public class ChatPlayer {
         return null;
     }
 
-    public void setLastReceiver(final org.bukkit.entity.Player sender) {
+    public void setLastReceiver(final Player sender) {
         this.LastReceiver = sender.getName();
     }
 

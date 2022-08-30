@@ -4,7 +4,7 @@ main: org.zeroBzeroT.chatCo.Main
 authors:
   - jj20051
   - bierdosenhalter
-description: An efficient chat system with green-text, ignore, whispers and chat logging.
+description: ${project.description}
 commands:
   togglechat:
     description: Enables or disables chat for the player.
@@ -25,93 +25,93 @@ commands:
     description: Enables or disables whispers and spoilers. Only console input accepted. 'e' enables, 'd' disables.
     usage: /chatco <whispers|spoilers|newcommands|whisperlog> <e|d>
 permissions:
-  ChatCo.ChatPrefixes.Green:
+  ChatCo.chatPrefixes.GREEN:
     description: Allows you to use to use Green prefixes in chat
     default: false
-  ChatCo.ChatPrefixes.Blue:
+  ChatCo.chatPrefixes.BLUE:
     description: Allows you to use to use Blue prefixes in chat
     default: false
-  ChatCo.ChatPrefixes.Red:
+  ChatCo.chatPrefixes.RED:
     description: Allows you to use to use Red prefixes in chat
     default: false
-  ChatCo.ChatPrefixes.Aqua:
+  ChatCo.chatPrefixes.AQUA:
     description: Allows you to use to use Aqua prefixes in chat
     default: false
-  ChatCo.ChatPrefixes.Gold:
+  ChatCo.chatPrefixes.GOLD:
     description: Allows you to use to use Gold prefixes in chat
     default: false
-  ChatCo.ChatPrefixes.Yellow:
+  ChatCo.chatPrefixes.YELLOW:
     description: Allows you to use to use Yellow prefixes in chat
     default: false
-  ChatCo.ChatPrefixes.Gray:
+  ChatCo.chatPrefixes.GRAY:
     description: Allows you to use to use Gray prefixes in chat
     default: false
-  ChatCo.ChatPrefixes.Black:
+  ChatCo.chatPrefixes.BLACK:
     description: Allows you to use to use Black prefixes in chat
     default: false
-  ChatCo.ChatPrefixes.Dark_Green:
+  ChatCo.chatPrefixes.DARK_GREEN:
     description: Allows you to use to use Dark_Green prefixes in chat
     default: false
-  ChatCo.ChatPrefixes.Dark_Red:
+  ChatCo.chatPrefixes.DARK_RED:
     description: Allows you to use to use Dark_Red prefixes in chat
     default: false
-  ChatCo.ChatPrefixes.Dark_Gray:
+  ChatCo.chatPrefixes.DARK_GRAY:
     description: Allows you to use to use Dark_Gray prefixes in chat
     default: false
-  ChatCo.ChatPrefixes.Dark_Blue:
+  ChatCo.chatPrefixes.DARK_BLUE:
     description: Allows you to use to use Dark_Blue prefixes in chat
     default: false
-  ChatCo.ChatPrefixes.Dark_Aqua:
+  ChatCo.chatPrefixes.DARK_AQUA:
     description: Allows you to use to use Dark_Aqua prefixes in chat
     default: false
-  ChatCo.ChatPrefixes.Dark_Purple:
+  ChatCo.chatPrefixes.DARK_PURPLE:
     description: Allows you to use to use Dark_Purple prefixes in chat
     default: false
-  ChatCo.ChatPrefixes.Light_Purple:
+  ChatCo.chatPrefixes.LIGHT_PURPLE:
     description: Allows you to use to use Light_Purple prefixes in chat
     default: false
-  ChatCo.ColorCodes.Green:
+  ChatCo.chatColors..GREEN:
     description: Allows you to use to use Green colors in chat
     default: false
-  ChatCo.ColorCodes.Blue:
+  ChatCo.chatColors..BLUE:
     description: Allows you to use to use Blue colors in chat
     default: false
-  ChatCo.ColorCodes.Red:
+  ChatCo.chatColors..RED:
     description: Allows you to use to use Red colors in chat
     default: false
-  ChatCo.ColorCodes.Aqua:
+  ChatCo.chatColors..AQUA:
     description: Allows you to use to use Aqua colors in chat
     default: false
-  ChatCo.ColorCodes.Gold:
+  ChatCo.chatColors..GOLD:
     description: Allows you to use to use Gold colors in chat
     default: false
-  ChatCo.ColorCodes.Yellow:
+  ChatCo.chatColors..YELLOW:
     description: Allows you to use to use Yellow colors in chat
     default: false
-  ChatCo.ColorCodes.Gray:
+  ChatCo.chatColors..GRAY:
     description: Allows you to use to use Gray colors in chat
     default: false
-  ChatCo.ColorCodes.Black:
+  ChatCo.chatColors..BLACK:
     description: Allows you to use to use Black colors in chat
     default: false
-  ChatCo.ColorCodes.Dark_Green:
+  ChatCo.chatColors..DARK_GREEN:
     description: Allows you to use to use Dark_Green colors in chat
     default: false
-  ChatCo.ColorCodes.Dark_Red:
+  ChatCo.chatColors..DARK_RED:
     description: Allows you to use to use Dark_Red colors in chat
     default: false
-  ChatCo.ColorCodes.Dark_Gray:
+  ChatCo.chatColors..DARK_GRAY:
     description: Allows you to use to use Dark_Gray colors in chat
     default: false
-  ChatCo.ColorCodes.Dark_Blue:
+  ChatCo.chatColors..DARK_BLUE:
     description: Allows you to use to use Dark_Blue colors in chat
     default: false
-  ChatCo.ColorCodes.Dark_Aqua:
+  ChatCo.chatColors..DARK_AQUA:
     description: Allows you to use to use Dark_Aqua colors in chat
     default: false
-  ChatCo.ColorCodes.Dark_Purple:
+  ChatCo.chatColors..DARK_PURPLE:
     description: Allows you to use to use Dark_Purple colors in chat
     default: false
-  ChatCo.ColorCodes.Light_Purple:
+  ChatCo.chatColors..LIGHT_PURPLE:
     description: Allows you to use to use Light_Purple colors in chat
     default: false

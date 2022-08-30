@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
+// TODO: is anyone using spoilers? maybe remove it?
 public class Spoilers implements Listener {
     final String[] Spoiler;
 
@@ -14,7 +15,6 @@ public class Spoilers implements Listener {
         this.Spoiler = new String[5];
     }
 
-    @SuppressWarnings("ManualArrayCopy")
     @EventHandler
     public void onPlayerChat(final AsyncPlayerChatEvent event) {
         if (event.isCancelled()) {

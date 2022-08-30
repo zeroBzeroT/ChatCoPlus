@@ -1,56 +1,62 @@
 ChatCo:
+  version: ${project.version}
+  bStats: true
   toggleChatEnabled: true
   ignoresEnabled: true
   ignoreMessageEnabled: true
   chatDisabledMessageEnabled: true
   SpoilersEnabled: false
-  WhisperChangesEnabled: true
-  NewCommands: true
-  ReplyCommands: true
-  LastCommands: true
-  WhisperLog: false
-  WhisperMonitoring: true
-  WhisperFormat:
-    Receive: "*LIGHT_PURPLE*SENDER whispers: "
-    Send: "*LIGHT_PURPLE*To RECEIVER: "
-  ChatPrefixes:
-    Green: ">"
-    Blue: "!#"
-    Red: "!#"
-    Aqua: "!#"
-    Gold: "!#"
-    Yellow: "!#"
-    Gray: "!#"
-    Black: "!#"
-    Dark_Green: "!#"
-    Dark_Red: "!#"
-    Dark_Gray: "!#"
-    Dark_Blue: "!#"
-    Dark_Aqua: "!#"
-    Dark_Purple: "!#"
-    Light_Purple: "!#"
-    Italic: "!#"
-    Underline: "!#"
-    Bold: "!#"
-    Strikethrough: "!#"
-  ChatColors:
-    White: "!#"
-    Green: "!#"
-    Blue: "!#"
-    Red: "!#"
-    Aqua: "!#"
-    Gold: "!#"
-    Yellow: "!#"
-    Gray: "!#"
-    Black: "!#"
-    Dark_Green: "!#"
-    Dark_Red: "!#"
-    Dark_Gray: "!#"
-    Dark_Blue: "!#"
-    Dark_Aqua: "!#"
-    Dark_Purple: "!#"
-    Light_Purple: "!#"
-    Italic: "!#"
-    Underline: "!#"
-    Bold: "!#"
-    Strikethrough: "!#"
+  whisperChangesEnabled: true
+  whisperOnClick: true
+  newCommands: true
+  replyCommands: true
+  lastCommand: true
+  whisperLog: false
+  whisperMonitoring: false
+  whisperFormat:
+    receive: "%LIGHT_PURPLE%%SENDER% whispers: "
+    send: "%LIGHT_PURPLE%To %RECEIVER%: "
+  chatPrefixes:
+    AQUA: null
+    BLACK: null
+    BLUE: null
+    BOLD: null
+    DARK_AQUA: null
+    DARK_BLUE: null
+    DARK_GRAY: null
+    DARK_GREEN: null
+    DARK_PURPLE: null
+    DARK_RED: null
+    GOLD: null
+    GRAY: null
+    GREEN: ">"
+    ITALIC: null
+    LIGHT_PURPLE: null
+    MAGIC: null
+    RED: null
+    STRIKETHROUGH: null
+    UNDERLINE: null
+    WHITE: null
+    YELLOW: null
+  chatColors:
+    AQUA: null
+    BLACK: null
+    BLUE: null
+    BOLD: null
+    DARK_AQUA: null
+    DARK_BLUE: null
+    DARK_GRAY: null
+    DARK_GREEN: null
+    DARK_PURPLE: null
+    DARK_RED: null
+    GOLD: null
+    GRAY: null
+    GREEN: null
+    ITALIC: null
+    LIGHT_PURPLE: null
+    MAGIC: null
+    RED: null
+    STRIKETHROUGH: null
+    UNDERLINE: null
+    WHITE: null
+    YELLOW: null
