@@ -38,7 +38,7 @@ public class Whispers implements Listener {
 
         if (plugin.getConfig().getBoolean("ChatCo.lastCommand", true) && (args[0].equalsIgnoreCase("/l") || args[0].equalsIgnoreCase("/last"))) {
             if (args.length == 1) {
-                sender.sendMessage(ChatColor.WHITE + "Usage: /l <message>");
+                sender.sendMessage(ChatColor.YELLOW + "Usage: /l <message>");
                 event.setCancelled(true);
                 return;
             }
@@ -47,9 +47,9 @@ public class Whispers implements Listener {
 
             if ((target == null && plugin.getChatPlayer(sender).LastReceiver != null)
                     || Utils.isVanished(target)) {
-                sender.sendMessage(ChatColor.RED + "The last person you sent a private message to is offline");
+                sender.sendMessage(ChatColor.RED + "The last person you sent a private message to is offline.");
             } else if (target == null) {
-                sender.sendMessage(ChatColor.RED + "You have not initiated any private message in this session");
+                sender.sendMessage(ChatColor.RED + "You have not initiated any private message in this session.");
             } else {
                 String message = Arrays.stream(args).skip(1).collect(Collectors.joining(" "));
                 sendPrivateMessage(sender, target, message);
@@ -58,7 +58,7 @@ public class Whispers implements Listener {
             event.setCancelled(true);
         } else if (plugin.getConfig().getBoolean("ChatCo.replyCommands", true) && (args[0].equalsIgnoreCase("/r") || args[0].equalsIgnoreCase("/reply"))) {
             if (args.length == 1) {
-                sender.sendMessage(ChatColor.WHITE + "Usage: /r <message>");
+                sender.sendMessage(ChatColor.YELLOW + "Usage: /r <message>");
                 event.setCancelled(true);
                 return;
             }
@@ -67,9 +67,9 @@ public class Whispers implements Listener {
 
             if ((target == null && plugin.getChatPlayer(sender).LastMessenger != null)
                     || Utils.isVanished(target)) {
-                sender.sendMessage(ChatColor.RED + "The last person you received a private message from is offline");
+                sender.sendMessage(ChatColor.RED + "The last person you received a private message from is offline.");
             } else if (target == null) {
-                sender.sendMessage(ChatColor.RED + "You have not received any private messages in this session");
+                sender.sendMessage(ChatColor.RED + "You have not received any private messages in this session.");
             } else {
                 String message = Arrays.stream(args).skip(1).collect(Collectors.joining(" "));
                 sendPrivateMessage(sender, target, message);
@@ -78,7 +78,7 @@ public class Whispers implements Listener {
             event.setCancelled(true);
         } else if (args[0].equalsIgnoreCase("/tell") || args[0].equalsIgnoreCase("/msg") || args[0].equalsIgnoreCase("/t") || args[0].equalsIgnoreCase("/w") || args[0].equalsIgnoreCase("/whisper") || args[0].equalsIgnoreCase("/pm")) {
             if (args.length < 3) {
-                sender.sendMessage(ChatColor.WHITE + "Usage: /w <player> <message>");
+                sender.sendMessage(ChatColor.YELLOW + "Usage: /w <player> <message>");
                 event.setCancelled(true);
                 return;
             }
@@ -86,7 +86,7 @@ public class Whispers implements Listener {
             final Player target = Bukkit.getPlayerExact(args[1]);
 
             if (target == null || Utils.isVanished(target)) {
-                sender.sendMessage(ChatColor.RED + args[1] + " is offline");
+                sender.sendMessage(ChatColor.RED + args[1] + " is offline.");
                 event.setCancelled(true);
                 return;
             }
@@ -173,9 +173,9 @@ public class Whispers implements Listener {
         sender.spigot().sendMessage(senderMessage);
 
         if (isIgnoring && plugin.getConfig().getBoolean("ChatCo.ignoreMessageEnabled", true)) {
-            sender.sendMessage(ChatColor.RED + receiver.getName() + " is ignoring you");
+            sender.sendMessage(ChatColor.RED + receiver.getName() + " is ignoring you.");
         } else if (doNotSend && plugin.getConfig().getBoolean("ChatCo.chatDisabledMessageEnabled", true)) {
-            sender.sendMessage(ChatColor.RED + receiver.getName() + "'s chat is disabled");
+            sender.sendMessage(ChatColor.RED + receiver.getName() + "'s chat is disabled.");
         } else if (!doNotSend && !isIgnoring) {
             receiver.spigot().sendMessage(receiverMessage);
 

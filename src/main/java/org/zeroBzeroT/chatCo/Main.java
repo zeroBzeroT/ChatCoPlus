@@ -21,11 +21,8 @@ public class Main extends JavaPlugin {
     public static File PermissionConfig;
     public static File WhisperLog;
     public static File dataFolder;
-    private static File Configuration;
     private static File Help;
     public Collection<ChatPlayer> playerList;
-    public boolean checkForChatDisable;
-    public boolean checkForIgnores;
 
     public void onDisable() {
         playerList.clear();
@@ -33,11 +30,13 @@ public class Main extends JavaPlugin {
 
     public void onEnable() {
         playerList = Collections.synchronizedCollection(new ArrayList<>());
-        checkForChatDisable = getConfig().getBoolean("ChatCo.chatDisableEnabled", true);
-        checkForIgnores = getConfig().getBoolean("ChatCo.ignoresEnabled", true);
 
-        checkFiles();
-        readConfig(0);
+        // Config defaults
+        getConfig().options().copyDefaults(true);
+        getConfig().options().copyHeader(true);
+
+        saveResourceFiles();
+        toggleConfigValue(0);
 
         final PluginManager pm = getServer().getPluginManager();
 
@@ -47,7 +46,7 @@ public class Main extends JavaPlugin {
             pm.registerEvents(new Whispers(this), this);
         }
 
-        if (getConfig().getBoolean("ChatCo.SpoilersEnabled", false)) {
+        if (getConfig().getBoolean("ChatCo.spoilersEnabled", false)) {
             pm.registerEvents(new Spoilers(), this);
         }
 
@@ -57,13 +56,13 @@ public class Main extends JavaPlugin {
         }
     }
 
-    private void readConfig(final int change) {
+    private void toggleConfigValue(final int change) {
         switch (change) {
             case 3:
-                getConfig().set("ChatCo.SpoilersEnabled", true);
+                getConfig().set("ChatCo.spoilersEnabled", true);
                 break;
             case 4:
-                getConfig().set("ChatCo.SpoilersEnabled", false);
+                getConfig().set("ChatCo.spoilersEnabled", false);
                 break;
             case 5:
                 getConfig().set("ChatCo.whisperChangesEnabled", true);
@@ -90,9 +89,8 @@ public class Main extends JavaPlugin {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void checkFiles() {
+    private void saveResourceFiles() {
         Main.dataFolder = getDataFolder();
-        Main.Configuration = new File(Main.dataFolder, "config.yml");
         Main.PermissionConfig = new File(Main.dataFolder, "permissionConfig.yml");
         Main.WhisperLog = new File(Main.dataFolder, "whisperlog.txt");
         Main.Help = new File(Main.dataFolder, "help.txt");
@@ -107,9 +105,8 @@ public class Main extends JavaPlugin {
             saveStreamToFile(getResource("help.txt"), Main.Help);
         }
 
-        if (!Main.Configuration.exists()) {
-            saveDefaultConfig();
-        }
+        // Save the default config file, if it does not exist
+        saveDefaultConfig();
 
         if (!Main.PermissionConfig.exists()) {
             Main.PermissionConfig.getParentFile().mkdirs();
@@ -121,16 +118,16 @@ public class Main extends JavaPlugin {
         if (sender instanceof Player) {
             if (cmd.getName().equalsIgnoreCase("togglechat") && getConfig().getBoolean("toggleChatEnabled", true)) {
                 if (toggleChat((Player) sender)) {
-                    sender.sendMessage(ChatColor.RED + "Your chat is now disabled until you type /togglechat or relog");
+                    sender.sendMessage(ChatColor.RED + "Your chat is now disabled until you type /togglechat or relog.");
                 } else {
-                    sender.sendMessage(ChatColor.RED + "Your chat has been re-enabled, type /togglechat to disable it again");
+                    sender.sendMessage(ChatColor.RED + "Your chat has been re-enabled, type /togglechat to disable it again.");
                 }
                 return true;
             } else if (cmd.getName().equalsIgnoreCase("toggletells")) {
                 if (toggleTells((Player) sender)) {
-                    sender.sendMessage(ChatColor.RED + "You will no longer receive tells, type /toggletells to see them again");
+                    sender.sendMessage(ChatColor.RED + "You will no longer receive tells, type /toggletells to see them again.");
                 } else {
-                    sender.sendMessage(ChatColor.RED + "You now receive tells, type /toggletells to disable them again");
+                    sender.sendMessage(ChatColor.RED + "You now receive tells, type /toggletells to disable them again.");
                 }
                 return true;
             } else if (cmd.getName().equalsIgnoreCase("unignoreall") && getConfig().getBoolean("ignoresEnabled", true)) {
@@ -143,19 +140,19 @@ public class Main extends JavaPlugin {
             } else if (cmd.getName().equalsIgnoreCase("ignore") && getConfig().getBoolean("ignoresEnabled", true)) {
                 try {
                     if (args.length < 1) {
-                        sender.sendMessage(ChatColor.RED + "You forgot to type the name of the player");
+                        sender.sendMessage(ChatColor.RED + "You forgot to type the name of the player.");
                         return true;
                     }
 
                     if (args[0].length() > 16) {
-                        sender.sendMessage(ChatColor.RED + "You entered an invalid player name");
+                        sender.sendMessage(ChatColor.RED + "You entered an invalid player name.");
                         return true;
                     }
 
                     final Player ignorable = Bukkit.getServer().getPlayer(args[0]);
 
                     if (ignorable == null) {
-                        sender.sendMessage(ChatColor.RED + "You have entered a player who does not exist or is offline");
+                        sender.sendMessage(ChatColor.RED + "You have entered a player who does not exist or is offline.");
                         return true;
                     }
 
@@ -165,15 +162,15 @@ public class Main extends JavaPlugin {
                     e.printStackTrace();
                 }
             } else if (cmd.getName().equalsIgnoreCase("ignorelist") && getConfig().getBoolean("ignoresEnabled", true)) {
-                sender.sendMessage(ChatColor.WHITE + "Ignored players:");
+                sender.sendMessage(ChatColor.YELLOW + "Ignored players:");
                 int i = 0;
 
                 for (final String ignores : getChatPlayer((Player) sender).getIgnoreList()) {
-                    sender.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + ignores);
+                    sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.ITALIC + ignores);
                     ++i;
                 }
 
-                sender.sendMessage(ChatColor.WHITE + "" + i + " players ignored");
+                sender.sendMessage(ChatColor.YELLOW + "" + i + " players ignored.");
                 return true;
             }
         }
@@ -189,40 +186,40 @@ public class Main extends JavaPlugin {
             if (args.length >= 2) {
                 if (args[0].equalsIgnoreCase("spoilers")) {
                     if (args[1].equalsIgnoreCase("e")) {
-                        readConfig(3);
+                        toggleConfigValue(3);
                         sender.sendMessage("Spoilers enabled");
                     } else if (args[1].equalsIgnoreCase("d")) {
-                        readConfig(4);
+                        toggleConfigValue(4);
                         sender.sendMessage("Spoilers disabled");
                     }
                 }
 
                 if (args[0].equalsIgnoreCase("whispers")) {
                     if (args[1].equalsIgnoreCase("e")) {
-                        readConfig(5);
+                        toggleConfigValue(5);
                         sender.sendMessage("Whisper changes enabled");
                     } else if (args[1].equalsIgnoreCase("d")) {
-                        readConfig(6);
+                        toggleConfigValue(6);
                         sender.sendMessage("Whisper changes disabled");
                     }
                 }
 
                 if (args[0].equalsIgnoreCase("newcommands")) {
                     if (args[1].equalsIgnoreCase("e")) {
-                        readConfig(7);
+                        toggleConfigValue(7);
                         sender.sendMessage("New Whisper commands enabled");
                     } else if (args[1].equalsIgnoreCase("d")) {
-                        readConfig(8);
+                        toggleConfigValue(8);
                         sender.sendMessage("New whisper commands disabled");
                     }
                 }
 
                 if (args[0].equalsIgnoreCase("whisperlog")) {
                     if (args[1].equalsIgnoreCase("e")) {
-                        readConfig(9);
+                        toggleConfigValue(9);
                         sender.sendMessage("Whisper logging enabled");
                     } else if (args[1].equalsIgnoreCase("d")) {
-                        readConfig(10);
+                        toggleConfigValue(10);
                         sender.sendMessage("Whisper logging disabled");
                     }
                 }
@@ -270,12 +267,12 @@ public class Main extends JavaPlugin {
     }
 
     private void ignorePlayer(final Player p, final String target) throws IOException {
-        String message = ChatColor.WHITE + "Chat messages from " + target + " will be ";
+        String message = ChatColor.YELLOW + "Chat messages from " + target + " will be ";
 
         if (getChatPlayer(p).isIgnored(target)) {
-            message += "shown";
+            message += "shown.";
         } else {
-            message += "hidden";
+            message += "hidden.";
         }
 
         p.sendMessage(message);
@@ -284,7 +281,7 @@ public class Main extends JavaPlugin {
 
     private void unIgnoreAll(final Player p) throws IOException {
         getChatPlayer(p).unIgnoreAll();
-        String message = ChatColor.WHITE + "Ignore list deleted";
+        String message = ChatColor.YELLOW + "Ignore list deleted.";
         p.sendMessage(message);
     }
 

@@ -1,11 +1,13 @@
+# Configuration file for ChatCoPlus ${project.version} (https://github.com/zeroBzeroT/ChatCoPlus)
 ChatCo:
-  version: ${project.version}
+  created: ${project.version}
   bStats: true
+  chatToConsole: true
   toggleChatEnabled: true
   ignoresEnabled: true
   ignoreMessageEnabled: true
   chatDisabledMessageEnabled: true
-  SpoilersEnabled: false
+  spoilersEnabled: false
   whisperChangesEnabled: true
   whisperOnClick: true
   newCommands: true
@@ -41,7 +43,7 @@ ChatCo:
   chatColors:
     AQUA: null
     BLACK: null
-    BLUE: null
+    BLUE: "`"
     BOLD: null
     DARK_AQUA: null
     DARK_BLUE: null

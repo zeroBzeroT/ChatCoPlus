@@ -25,15 +25,15 @@ public class PublicChat implements Listener {
     public PublicChat(final Main plugin) {
         this.plugin = plugin;
         File customConfig = Main.PermissionConfig;
-        this.permissionConfig = YamlConfiguration.loadConfiguration(customConfig);
+        permissionConfig = YamlConfiguration.loadConfiguration(customConfig);
     }
 
     public String replacePrefixColors(String message, final Player player) {
         for (ChatColor color : ChatColor.values()) {
-            if (this.plugin.getConfig().getString("ChatCo.chatPrefixes." + color.name()) != null && message.startsWith(this.plugin.getConfig().getString("ChatCo.chatPrefixes." + color.name()))) {
+            if (plugin.getConfig().getString("ChatCo.chatPrefixes." + color.name()) != null && message.startsWith(plugin.getConfig().getString("ChatCo.chatPrefixes." + color.name()))) {
 
                 // check for global or player permission
-                if (this.permissionConfig.getBoolean("ChatCo.chatPrefixes." + color.name(), false) || player.hasPermission("ChatCo.chatPrefixes." + color.name())) {
+                if (permissionConfig.getBoolean("ChatCo.chatPrefixes." + color.name(), false) || player.hasPermission("ChatCo.chatPrefixes." + color.name())) {
                     message = color + message;
                 }
 
@@ -47,9 +47,9 @@ public class PublicChat implements Listener {
 
     public String replaceInlineColors(String message, final Player player) {
         for (ChatColor color : ChatColor.values()) {
-            if ((this.permissionConfig.getBoolean("ChatCo.chatColors." + color.name(), false) || player.hasPermission("ChatCo.chatColors." + color.name()))
-                    && this.plugin.getConfig().getString("ChatCo.chatColors." + color.name()) != null) {
-                message = message.replace(this.plugin.getConfig().getString("ChatCo.chatColors." + color.name()), color.toString());
+            if ((permissionConfig.getBoolean("ChatCo.chatColors." + color.name(), false) || player.hasPermission("ChatCo.chatColors." + color.name()))
+                    && plugin.getConfig().getString("ChatCo.chatColors." + color.name()) != null) {
+                message = message.replace(plugin.getConfig().getString("ChatCo.chatColors." + color.name()), color.toString());
             }
         }
 
@@ -66,8 +66,8 @@ public class PublicChat implements Listener {
 
         // Plain message
         final Player player = event.getPlayer();
-        String legacyMessage = this.replacePrefixColors(event.getMessage(), player);
-        legacyMessage = this.replaceInlineColors(legacyMessage, player);
+        String legacyMessage = replacePrefixColors(event.getMessage(), player);
+        legacyMessage = replaceInlineColors(legacyMessage, player);
 
         // Do not send empty messages
         if (ChatColor.stripColor(legacyMessage).trim().length() == 0) {
@@ -91,13 +91,17 @@ public class PublicChat implements Listener {
         message.addExtra(componentFromLegacyText("> "));
         message.addExtra(messageText);
 
+        // Send to console
+        if (plugin.getConfig().getBoolean("ChatCo.chatToConsole", true))
+            plugin.getLogger().info(message.toLegacyText());
+
         // Send to the players
         for (Player recipient : event.getRecipients()) {
             try {
-                ChatPlayer chatPlayer = this.plugin.getChatPlayer(recipient);
+                ChatPlayer chatPlayer = plugin.getChatPlayer(recipient);
 
-                if ((!chatPlayer.chatDisabled || !this.plugin.checkForChatDisable) &&
-                        (!chatPlayer.isIgnored(player.getName()) || !this.plugin.checkForIgnores)) {
+                if ((!chatPlayer.chatDisabled || !plugin.getConfig().getBoolean("ChatCo.chatDisableEnabled", true)) &&
+                        (!chatPlayer.isIgnored(player.getName()) || !plugin.getConfig().getBoolean("ChatCo.ignoresEnabled", true))) {
                     recipient.spigot().sendMessage(message);
                 }
 
@@ -109,11 +113,11 @@ public class PublicChat implements Listener {
 
     @EventHandler
     public void onPlayerQuit(final PlayerQuitEvent e) {
-        this.plugin.remove(e.getPlayer());
+        plugin.remove(e.getPlayer());
     }
 
     @EventHandler
     public void onPlayerKick(final PlayerKickEvent e) {
-        this.plugin.remove(e.getPlayer());
+        plugin.remove(e.getPlayer());
     }
 }
