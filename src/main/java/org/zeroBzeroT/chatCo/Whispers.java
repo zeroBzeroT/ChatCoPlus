@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
@@ -28,10 +27,7 @@ public class Whispers implements Listener {
         this.plugin = plugin;
     }
 
-    /**
-     * high event priority (lower rank) makes it easier for other plugins to block commands of this plugin
-     */
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
         final String[] args = event.getMessage().split(" ");
         final Player sender = event.getPlayer();

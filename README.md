@@ -75,10 +75,6 @@ You can customize the appearance of whispers.
 - Write [SPOILER]text[/SPOILER] to make a spoiler.
 - Write /show spoiler [1-5] to view spoilers.
 
-### Planned Features
-
-- Fully Async Chat
-
 ### Tested Minecraft Versions
 
 - 1.12.2

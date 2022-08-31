@@ -59,10 +59,8 @@ public class PublicChat implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerChat(final AsyncPlayerChatEvent event) {
         // Set format to the plain message, since the player is not needed
+        String oldFormat = event.getFormat();
         event.setFormat("%2$s");
-
-        // Cancel the event, because the chat is rewritten to system messages
-        event.setCancelled(true);
 
         // Plain message
         final Player player = event.getPlayer();
@@ -71,6 +69,7 @@ public class PublicChat implements Listener {
 
         // Do not send empty messages
         if (ChatColor.stripColor(legacyMessage).trim().length() == 0) {
+            event.setCancelled(true);
             return;
         }
 
@@ -91,10 +90,6 @@ public class PublicChat implements Listener {
         message.addExtra(componentFromLegacyText("> "));
         message.addExtra(messageText);
 
-        // Send to console
-        if (plugin.getConfig().getBoolean("ChatCo.chatToConsole", true))
-            plugin.getLogger().info(message.toLegacyText());
-
         // Send to the players
         for (Player recipient : event.getRecipients()) {
             try {
@@ -104,11 +99,16 @@ public class PublicChat implements Listener {
                         (!chatPlayer.isIgnored(player.getName()) || !plugin.getConfig().getBoolean("ChatCo.ignoresEnabled", true))) {
                     recipient.spigot().sendMessage(message);
                 }
-
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
         }
+
+        // Do not send it to the players again - no event cancelling, so that other plugins can process the chat
+        event.getRecipients().clear();
+
+        // Write back the old format
+        event.setFormat(oldFormat);
     }
 
     @EventHandler
