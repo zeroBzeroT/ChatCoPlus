@@ -81,9 +81,16 @@ You can customize the appearance of whispers.
 
 - 1.12.2
 
-### Git Release Creation
+### Statistics
 
-```bash
-git tag <tag_name>
-git push origin <tag_name>
-```
+![Graph](https://bstats.org/signatures/bukkit/0b0t_ChatCoPlus.svg)
+
+### Warranty
+
+The Software is provided "as is" and without warranties of any kind, express
+or implied, including but not limited to the warranties of merchantability,
+fitness for a particular purpose, and non-infringement. In no event shall the
+Authors or copyright owners be liable for any claims, damages or other
+liability, whether in an action in contract, tort or otherwise, arising from,
+out of or in connection with the Software or the use or other dealings in the
+Software.
