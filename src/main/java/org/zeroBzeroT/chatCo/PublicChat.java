@@ -56,7 +56,7 @@ public class PublicChat implements Listener {
         return message;
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerChat(final AsyncPlayerChatEvent event) {
         // Set format to the plain message, since the player is not needed
         String oldFormat = event.getFormat();
