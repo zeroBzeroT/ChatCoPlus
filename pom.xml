@@ -5,17 +5,18 @@
 
     <groupId>org.zeroBzeroT.chatCo</groupId>
     <artifactId>ChatCoPlus</artifactId>
-    <version>0.27.4</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
 
     <description>An efficient chat system with colored text, ignore list, whispering and chat logging.</description>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <minecraft.version>1.20.1</minecraft.version>
     </properties>
 
     <build>
@@ -92,8 +93,8 @@
     <repositories>
         <!-- This adds the Spigot Maven repository to the build -->
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
         <repository>
             <id>codemc-repo</id>
@@ -104,10 +105,11 @@
 
     <dependencies>
         <!--This adds the Spigot API artifact to the build -->
+        <!-- folia api -->
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.12.2-R0.1-SNAPSHOT</version>
+            <groupId>dev.folia</groupId>
+            <artifactId>folia-api</artifactId>
+            <version>${minecraft.version}-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

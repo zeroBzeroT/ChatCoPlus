@@ -35,7 +35,7 @@ public class Utils {
         TextComponent textComponent = null;
 
         for (BaseComponent component : TextComponent.fromLegacyText(legacyText)) {
-            if (component.toLegacyText().length() > 0) {
+            if (!component.toLegacyText().isEmpty()) {
                 if (textComponent == null)
                     textComponent = (TextComponent) component;
                 else

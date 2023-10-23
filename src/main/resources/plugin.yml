@@ -1,10 +1,12 @@
 name: ChatCo
 version: ${project.version}
 main: org.zeroBzeroT.chatCo.Main
+api-version: 1.20
+folia-supported: true
+description: ${project.description}
 authors:
   - jj20051
   - bierdosenhalter
-description: ${project.description}
 commands:
   togglechat:
     description: Enables or disables chat for the player.

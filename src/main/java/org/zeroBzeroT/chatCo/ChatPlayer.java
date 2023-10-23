@@ -46,7 +46,7 @@ public class ChatPlayer {
             bwo.close();
         }
 
-        if (!p.equals("")) {
+        if (!p.isEmpty()) {
             if (!this.isIgnored(p)) {
                 final FileWriter fwo = new FileWriter(this.IgnoreList, true);
                 final BufferedWriter bwo = new BufferedWriter(fwo);

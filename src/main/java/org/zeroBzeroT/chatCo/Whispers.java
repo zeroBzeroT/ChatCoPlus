@@ -20,13 +20,7 @@ import java.util.stream.Collectors;
 import static org.zeroBzeroT.chatCo.Utils.componentFromLegacyText;
 import static org.zeroBzeroT.chatCo.Utils.now;
 
-public class Whispers implements Listener {
-    public final Main plugin;
-
-    public Whispers(final Main plugin) {
-        this.plugin = plugin;
-    }
-
+public record Whispers(Main plugin) implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
         final String[] args = event.getMessage().split(" ");

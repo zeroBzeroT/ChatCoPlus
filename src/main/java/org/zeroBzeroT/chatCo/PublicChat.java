@@ -68,7 +68,7 @@ public class PublicChat implements Listener {
         legacyMessage = replaceInlineColors(legacyMessage, player);
 
         // Do not send empty messages
-        if (ChatColor.stripColor(legacyMessage).trim().length() == 0) {
+        if (ChatColor.stripColor(legacyMessage).trim().isEmpty()) {
             event.setCancelled(true);
             return;
         }
