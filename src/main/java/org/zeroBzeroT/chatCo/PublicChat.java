@@ -1,16 +1,19 @@
 package org.zeroBzeroT.chatCo;
 
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -56,15 +59,19 @@ public class PublicChat implements Listener {
         return message;
     }
 
-    @EventHandler(ignoreCancelled = true)
-    public void onPlayerChat(final AsyncPlayerChatEvent event) {
+    /**
+     * @url https://docs.advntr.dev/text.html
+     */
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onAsyncChat(AsyncChatEvent event) {
         // Set format to the plain message, since the player is not needed
-        String oldFormat = event.getFormat();
-        event.setFormat("%2$s");
+        //String oldFormat = event.getFormat();
+        //event.setFormat("%2$s");
 
         // Plain message
         final Player player = event.getPlayer();
-        String legacyMessage = replacePrefixColors(event.getMessage(), player);
+        String legacyMessage = LegacyComponentSerializer.legacyAmpersand().serialize(event.message());
+        legacyMessage = replacePrefixColors(legacyMessage, player);
         legacyMessage = replaceInlineColors(legacyMessage, player);
 
         // Do not send empty messages
@@ -78,37 +85,45 @@ public class PublicChat implements Listener {
 
         // Sender name
         TextComponent messageSender = componentFromLegacyText(player.getDisplayName());
+
         if (plugin.getConfig().getBoolean("ChatCo.whisperOnClick", true)) {
-            messageSender.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/w " + player.getName() + " "));
-            messageSender.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Whisper to " + player.getName()).create()));
+            messageSender = messageSender.clickEvent(ClickEvent.suggestCommand("/w " + player.getName() + " "));
+            messageSender = messageSender.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Whisper to " + player.getName())));
         }
 
         // Message
-        TextComponent message = new TextComponent();
-        message.addExtra(componentFromLegacyText("<"));
-        message.addExtra(messageSender);
-        message.addExtra(componentFromLegacyText("> "));
-        message.addExtra(messageText);
+        TextComponent message = Component.text("")
+                .append(componentFromLegacyText("<"))
+                .append(messageSender)
+                .append(componentFromLegacyText("> "))
+                .append(messageText);
 
         // Send to the players
-        for (Player recipient : event.getRecipients()) {
-            try {
-                ChatPlayer chatPlayer = plugin.getChatPlayer(recipient);
+        if (!plugin.getConfig().getBoolean("ChatCo.chatDisabled", false)) {
+            for (Audience recipient : event.viewers()) {
+                try {
+                    if (recipient instanceof Player) {
+                        ChatPlayer chatPlayer = plugin.getChatPlayer((Player) recipient);
 
-                if ((!chatPlayer.chatDisabled || !plugin.getConfig().getBoolean("ChatCo.chatDisableEnabled", true)) &&
-                        (!chatPlayer.isIgnored(player.getName()) || !plugin.getConfig().getBoolean("ChatCo.ignoresEnabled", true))) {
-                    recipient.spigot().sendMessage(message);
+                        if (chatPlayer.chatDisabled)
+                            continue;
+
+                        if (chatPlayer.isIgnored(player.getName()) && plugin.getConfig().getBoolean("ChatCo.ignoresEnabled", true))
+                            continue;
+                    }
+
+                    recipient.sendMessage(message);
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
                 }
-            } catch (NullPointerException e) {
-                e.printStackTrace();
             }
         }
 
         // Do not send it to the players again - no event cancelling, so that other plugins can process the chat
-        event.getRecipients().clear();
+        event.viewers().clear();
 
         // Write back the old format
-        event.setFormat(oldFormat);
+        //event.setFormat(oldFormat);
     }
 
     @EventHandler

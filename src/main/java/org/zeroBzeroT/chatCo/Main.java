@@ -1,5 +1,11 @@
 package org.zeroBzeroT.chatCo;
 
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -34,7 +40,7 @@ public class Main extends JavaPlugin {
 
         // Config defaults
         getConfig().options().copyDefaults(true);
-        getConfig().options().copyHeader(true);
+        getConfig().options().parseComments(true);
 
         saveResourceFiles();
         toggleConfigValue(0);
@@ -234,7 +240,7 @@ public class Main extends JavaPlugin {
 
     public ChatPlayer getChatPlayer(final Player p) {
         for (final ChatPlayer chatPlayer : playerList) {
-            if (chatPlayer.playerUUID.equals(p.getUniqueId())) {
+            if (chatPlayer.playerUUID.equals(p .getUniqueId())) {
                 return chatPlayer;
             }
         }

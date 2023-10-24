@@ -1,6 +1,7 @@
 # Configuration file for ChatCoPlus ${project.version} (https://github.com/zeroBzeroT/ChatCoPlus)
 ChatCo:
   created: ${project.version}
+  chatDisabled: false
   bStats: true
   chatToConsole: true
   toggleChatEnabled: true

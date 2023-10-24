@@ -1,9 +1,11 @@
 package org.zeroBzeroT.chatCo;
 
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -122,20 +124,23 @@ public record Whispers(Main plugin) implements Listener {
         TextComponent messagePlayer = componentFromLegacyText(name);
 
         if (plugin.getConfig().getBoolean("ChatCo.whisperOnClick", true)) {
-            messagePlayer.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/w " + name + " "));
-            messagePlayer.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Whisper to " + name).create()));
+            messagePlayer = messagePlayer.clickEvent(ClickEvent.suggestCommand("/w " + name + " "));
+            messagePlayer = messagePlayer.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Whisper to " + name)));
         }
 
-        if (messagePlayer.getColor() == net.md_5.bungee.api.ChatColor.WHITE)
-            messagePlayer.setColor(message.getColor());
-        message.addExtra(messagePlayer);
+        if (messagePlayer.color() != message.color())
+            messagePlayer = messagePlayer.color(message.color());
+
+        message = message.append(messagePlayer);
 
         // Part after player name
         if (parts.length == 2) {
             TextComponent part1 = componentFromLegacyText(parts[1]);
-            if (part1.getColor() == net.md_5.bungee.api.ChatColor.WHITE)
-                message.setColor(message.getColor());
-            message.addExtra(part1);
+
+            if (part1.color() != message.color())
+                message = message.color(part1.color());
+
+            message = message.append(part1);
         }
 
         return message;
@@ -154,20 +159,20 @@ public record Whispers(Main plugin) implements Listener {
             isIgnoring = true;
         }
 
-        final TextComponent senderMessage = whisperFormat(true, sender, receiver);
-        final TextComponent receiverMessage = whisperFormat(false, sender, receiver);
+        TextComponent senderMessage = whisperFormat(true, sender, receiver);
+        TextComponent receiverMessage = whisperFormat(false, sender, receiver);
 
-        receiverMessage.addExtra(message);
-        senderMessage.addExtra(message);
+        receiverMessage = receiverMessage.append(Component.text(message));
+        senderMessage = senderMessage.append(Component.text(message));
 
-        sender.spigot().sendMessage(senderMessage);
+        sender.sendMessage(senderMessage);
 
         if (isIgnoring && plugin.getConfig().getBoolean("ChatCo.ignoreMessageEnabled", true)) {
             sender.sendMessage(ChatColor.RED + receiver.getName() + " is ignoring you.");
         } else if (doNotSend && plugin.getConfig().getBoolean("ChatCo.chatDisabledMessageEnabled", true)) {
             sender.sendMessage(ChatColor.RED + receiver.getName() + "'s chat is disabled.");
         } else if (!doNotSend && !isIgnoring) {
-            receiver.spigot().sendMessage(receiverMessage);
+            receiver.sendMessage(receiverMessage);
 
             if (target != null)
                 target.setLastMessenger(sender);
