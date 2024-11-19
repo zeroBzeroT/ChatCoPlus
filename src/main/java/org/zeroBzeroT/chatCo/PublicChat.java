@@ -19,7 +19,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.io.File;
 
-import static org.zeroBzeroT.chatCo.Utils.componentFromLegacyText;
+import static org.zeroBzeroT.chatCo.Components.mm;
 
 public class PublicChat implements Listener {
     public final Main plugin;
@@ -81,21 +81,21 @@ public class PublicChat implements Listener {
         }
 
         // Message text
-        TextComponent messageText = componentFromLegacyText(legacyMessage);
+        Component messageText = Component.text(legacyMessage);
 
         // Sender name
-        TextComponent messageSender = componentFromLegacyText(player.getDisplayName());
+        Component sender = player.displayName();
 
         if (plugin.getConfig().getBoolean("ChatCo.whisperOnClick", true)) {
-            messageSender = messageSender.clickEvent(ClickEvent.suggestCommand("/w " + player.getName() + " "));
-            messageSender = messageSender.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Whisper to " + player.getName())));
+            sender = sender.clickEvent(ClickEvent.suggestCommand("/w " + player.getName() + " "));
+            sender = sender.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Whisper to " + player.getName())));
         }
 
         // Message
         TextComponent message = Component.text("")
-                .append(componentFromLegacyText("<"))
-                .append(messageSender)
-                .append(componentFromLegacyText("> "))
+                .append(Component.text("<"))
+                .append(sender)
+                .append(Component.text("> "))
                 .append(messageText);
 
         // Send to the players

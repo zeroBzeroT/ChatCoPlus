@@ -1,11 +1,8 @@
 package org.zeroBzeroT.chatCo;
 
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -19,7 +16,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static org.zeroBzeroT.chatCo.Utils.componentFromLegacyText;
+import static org.zeroBzeroT.chatCo.Components.mm;
 import static org.zeroBzeroT.chatCo.Utils.now;
 
 public record Whispers(Main plugin) implements Listener {
@@ -97,31 +94,33 @@ public record Whispers(Main plugin) implements Listener {
         }
     }
 
-    public TextComponent whisperFormat(Boolean send, final Player sender, final Player target) {
-        String legacyMessage = send ? plugin.getConfig().getString("ChatCo.whisperFormat.send") : plugin.getConfig().getString("ChatCo.whisperFormat.receive");
+    public Component whisperFormat(Boolean isSending, final Player sender, final Player target) {
+        String legacyMessage = isSending ?
+                plugin.getConfig().getString("ChatCo.whisperFormat.send") :
+                plugin.getConfig().getString("ChatCo.whisperFormat.receive");
 
-        for (ChatColor color : ChatColor.values()) {
-            legacyMessage = legacyMessage.replace("%" + color.name() + "%", color.toString());
-        }
+        //for (ChatColor color : ChatColor.values()) {
+        //    legacyMessage = legacyMessage.replace("%" + color.name() + "%", color.toString());
+        //}
 
         String[] parts;
         String name;
 
-        if (send) {
-            legacyMessage = legacyMessage.replace("%SENDER%", sender.getName());
+        if (isSending) {
+            //legacyMessage = legacyMessage.replace("%SENDER%", sender.getName());
             parts = legacyMessage.split("%RECEIVER%", 2);
             name = target.getName();
         } else {
-            legacyMessage = legacyMessage.replace("%RECEIVER%", target.getName());
+            //legacyMessage = legacyMessage.replace("%RECEIVER%", target.getName());
             parts = legacyMessage.split("%SENDER%", 2);
             name = sender.getName();
         }
 
         // Part before player name
-        TextComponent message = componentFromLegacyText(parts[0]);
+        var message = mm(parts[0]);
 
         // Player name
-        TextComponent messagePlayer = componentFromLegacyText(name);
+        var messagePlayer = mm(name);
 
         if (plugin.getConfig().getBoolean("ChatCo.whisperOnClick", true)) {
             messagePlayer = messagePlayer.clickEvent(ClickEvent.suggestCommand("/w " + name + " "));
@@ -135,7 +134,7 @@ public record Whispers(Main plugin) implements Listener {
 
         // Part after player name
         if (parts.length == 2) {
-            TextComponent part1 = componentFromLegacyText(parts[1]);
+            Component part1 = mm(parts[1]);
 
             if (part1.color() != message.color())
                 message = message.color(part1.color());
@@ -159,8 +158,8 @@ public record Whispers(Main plugin) implements Listener {
             isIgnoring = true;
         }
 
-        TextComponent senderMessage = whisperFormat(true, sender, receiver);
-        TextComponent receiverMessage = whisperFormat(false, sender, receiver);
+        Component senderMessage = whisperFormat(true, sender, receiver);
+        Component receiverMessage = whisperFormat(false, sender, receiver);
 
         receiverMessage = receiverMessage.append(Component.text(message));
         senderMessage = senderMessage.append(Component.text(message));

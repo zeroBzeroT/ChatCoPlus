@@ -28,12 +28,12 @@ public class Utils {
         return false;
     }
 
-    /**
-     * Converts a string into a single text component while retaining the old formatting
-     */
-    public static TextComponent componentFromLegacyText(String legacyText) {
-        return LegacyComponentSerializer.legacyAmpersand().deserialize(legacyText);
-    }
+    ///**
+    // * Converts a string into a single text component while retaining the old formatting
+    // */
+    //public static TextComponent componentFromLegacyText(String legacyText) {
+    //    return LegacyComponentSerializer.legacyAmpersand().deserialize(legacyText);
+    //}
 
     /**
      * Saves a stream to a file

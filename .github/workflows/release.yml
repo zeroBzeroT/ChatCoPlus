@@ -13,11 +13,12 @@ jobs:
       - name: Git
         uses: actions/checkout@v4
 
-      - name: Java
-        uses: actions/setup-java@v4.0.0
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
-          distribution: 'adopt'
-          java-version: '8'
+          java-version: '21'
+          distribution: 'temurin'
+          check-latest: true
 
       - name: Cache
         uses: actions/cache@v4.0.0
