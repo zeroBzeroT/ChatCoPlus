@@ -13,15 +13,15 @@ jobs:
       - name: Git
         uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - name: Java
+        uses: actions/setup-java@v4.5.0
         with:
           java-version: '21'
           distribution: 'temurin'
           check-latest: true
 
       - name: Cache
-        uses: actions/cache@v4.0.0
+        uses: actions/cache@v4.1.2
         with:
           path: ~/.m2
           key: '${{ runner.os }}-m2-${{ hashFiles(''**/pom.xml'') }}'
@@ -43,7 +43,7 @@ jobs:
           prerelease: false
 
       - name: Release
-        uses: csexton/release-asset-action@v2
+        uses: csexton/release-asset-action@v3
         with:
           pattern: "target/ChatCoPlus-*.jar"
           github-token: ${{ secrets.GITHUB_TOKEN }}
