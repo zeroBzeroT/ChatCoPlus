@@ -1,7 +1,7 @@
 package org.zeroBzeroT.chatCo;
 
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -22,18 +22,15 @@ public class Utils {
      */
     public static boolean isVanished(Player player) {
         if (player != null && player.hasMetadata("vanished") && !player.getMetadata("vanished").isEmpty()) {
-            return player.getMetadata("vanished").get(0).asBoolean();
+            return player.getMetadata("vanished").getFirst().asBoolean();
         }
 
         return false;
     }
 
-    ///**
-    // * Converts a string into a single text component while retaining the old formatting
-    // */
-    //public static TextComponent componentFromLegacyText(String legacyText) {
-    //    return LegacyComponentSerializer.legacyAmpersand().deserialize(legacyText);
-    //}
+    public static Component mm(String miniMessageString) { // mm, short for MiniMessage
+        return MiniMessage.miniMessage().deserialize(miniMessageString);
+    }
 
     /**
      * Saves a stream to a file

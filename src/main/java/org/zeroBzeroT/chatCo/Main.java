@@ -1,14 +1,10 @@
 package org.zeroBzeroT.chatCo;
 
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -125,16 +121,16 @@ public class Main extends JavaPlugin {
         if (sender instanceof Player) {
             if (cmd.getName().equalsIgnoreCase("togglechat") && getConfig().getBoolean("toggleChatEnabled", true)) {
                 if (toggleChat((Player) sender)) {
-                    sender.sendMessage(ChatColor.RED + "Your chat is now disabled until you type /togglechat or relog.");
+                    sender.sendMessage(Component.text("Your chat is now disabled until you type /togglechat or relog.", NamedTextColor.RED));
                 } else {
-                    sender.sendMessage(ChatColor.RED + "Your chat has been re-enabled, type /togglechat to disable it again.");
+                    sender.sendMessage(Component.text("Your chat has been re-enabled, type /togglechat to disable it again.", NamedTextColor.RED));
                 }
                 return true;
             } else if (cmd.getName().equalsIgnoreCase("toggletells")) {
                 if (toggleTells((Player) sender)) {
-                    sender.sendMessage(ChatColor.RED + "You will no longer receive tells, type /toggletells to see them again.");
+                    sender.sendMessage(Component.text("You will no longer receive tells, type /toggletells to see them again.", NamedTextColor.RED));
                 } else {
-                    sender.sendMessage(ChatColor.RED + "You now receive tells, type /toggletells to disable them again.");
+                    sender.sendMessage(Component.text("You now receive tells, type /toggletells to disable them again.", NamedTextColor.RED));
                 }
                 return true;
             } else if (cmd.getName().equalsIgnoreCase("unignoreall") && getConfig().getBoolean("ignoresEnabled", true)) {
@@ -147,19 +143,19 @@ public class Main extends JavaPlugin {
             } else if (cmd.getName().equalsIgnoreCase("ignore") && getConfig().getBoolean("ignoresEnabled", true)) {
                 try {
                     if (args.length < 1) {
-                        sender.sendMessage(ChatColor.RED + "You forgot to type the name of the player.");
+                        sender.sendMessage(Component.text("You forgot to type the name of the player.", NamedTextColor.RED));
                         return true;
                     }
 
                     if (args[0].length() > 16) {
-                        sender.sendMessage(ChatColor.RED + "You entered an invalid player name.");
+                        sender.sendMessage(Component.text("You entered an invalid player name.", NamedTextColor.RED));
                         return true;
                     }
 
                     final Player ignorable = Bukkit.getServer().getPlayer(args[0]);
 
                     if (ignorable == null) {
-                        sender.sendMessage(ChatColor.RED + "You have entered a player who does not exist or is offline.");
+                        sender.sendMessage(Component.text("You have entered a player who does not exist or is offline.", NamedTextColor.RED));
                         return true;
                     }
 
@@ -169,15 +165,16 @@ public class Main extends JavaPlugin {
                     e.printStackTrace();
                 }
             } else if (cmd.getName().equalsIgnoreCase("ignorelist") && getConfig().getBoolean("ignoresEnabled", true)) {
-                sender.sendMessage(ChatColor.YELLOW + "Ignored players:");
+                sender.sendMessage(Component.text("Ignored players:", NamedTextColor.YELLOW));
                 int i = 0;
 
-                for (final String ignores : getChatPlayer((Player) sender).getIgnoreList()) {
-                    sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.ITALIC + ignores);
+                for (final String ignores : getChatPlayer((Player) sender).getIgnoresFile()) {
+                    sender.sendMessage(Component.text(ignores, NamedTextColor.YELLOW, TextDecoration.ITALIC));
+                    ++i;
                     ++i;
                 }
 
-                sender.sendMessage(ChatColor.YELLOW + "" + i + " players ignored.");
+                sender.sendMessage(Component.text("You have " + i + " players ignored.", NamedTextColor.YELLOW));
                 return true;
             }
         }
@@ -240,7 +237,7 @@ public class Main extends JavaPlugin {
 
     public ChatPlayer getChatPlayer(final Player p) {
         for (final ChatPlayer chatPlayer : playerList) {
-            if (chatPlayer.playerUUID.equals(p .getUniqueId())) {
+            if (chatPlayer.playerUUID.equals(p.getUniqueId())) {
                 return chatPlayer;
             }
         }
@@ -274,26 +271,25 @@ public class Main extends JavaPlugin {
     }
 
     private void ignorePlayer(final Player p, final String target) throws IOException {
-        String message = ChatColor.YELLOW + "Chat messages from " + target + " will be ";
+        Component message = Component.text("Chat messages from " + target + " will be ");
 
         if (getChatPlayer(p).isIgnored(target)) {
-            message += "shown.";
+            message = message.append(Component.text("shown."));
         } else {
-            message += "hidden.";
+            message = message.append(Component.text("hidden."));
         }
 
-        p.sendMessage(message);
+        p.sendMessage(message.color(NamedTextColor.YELLOW));
         getChatPlayer(p).saveIgnoreList(target);
     }
 
     private void unIgnoreAll(final Player p) throws IOException {
         getChatPlayer(p).unIgnoreAll();
-        String message = ChatColor.YELLOW + "Ignore list deleted.";
-        p.sendMessage(message);
+        p.sendMessage(Component.text("Ignore list deleted.", NamedTextColor.YELLOW));
     }
 
     public void remove(Player player) {
-        playerList.removeIf(p -> p.player.equals(player));
+        playerList.removeIf(p -> p.playerUUID.equals(player.getUniqueId()));
     }
 }
 

@@ -17,8 +17,9 @@ ChatCo:
   whisperLog: false
   whisperMonitoring: false
   whisperFormat:
-    receive: "<light_purple>%SENDER% whispers: "
-    send: "<light_purple>To %RECEIVER%: "
+    receive: "%SENDER% whispers: "
+    send: "To %RECEIVER%: "
+    color: light_purple
   chatPrefixes:
     AQUA: null
     BLACK: null

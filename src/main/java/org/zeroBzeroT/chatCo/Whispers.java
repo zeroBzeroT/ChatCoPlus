@@ -3,8 +3,8 @@ package org.zeroBzeroT.chatCo;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,9 +14,9 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static org.zeroBzeroT.chatCo.Components.mm;
 import static org.zeroBzeroT.chatCo.Utils.now;
 
 public record Whispers(Main plugin) implements Listener {
@@ -27,18 +27,17 @@ public record Whispers(Main plugin) implements Listener {
 
         if (plugin.getConfig().getBoolean("ChatCo.lastCommand", true) && (args[0].equalsIgnoreCase("/l") || args[0].equalsIgnoreCase("/last"))) {
             if (args.length == 1) {
-                sender.sendMessage(ChatColor.YELLOW + "Usage: /l <message>");
+                sender.sendMessage(Component.text("Usage: /l <message>", NamedTextColor.YELLOW));
                 event.setCancelled(true);
                 return;
             }
 
             final Player target = plugin.getChatPlayer(sender).getLastReceiver();
 
-            if ((target == null && plugin.getChatPlayer(sender).LastReceiver != null)
-                    || Utils.isVanished(target)) {
-                sender.sendMessage(ChatColor.RED + "The last person you sent a private message to is offline.");
+            if ((target == null && plugin.getChatPlayer(sender).LastReceiver != null) || Utils.isVanished(target)) {
+                sender.sendMessage(Component.text("The last person you sent a private message to is offline.", NamedTextColor.RED));
             } else if (target == null) {
-                sender.sendMessage(ChatColor.RED + "You have not initiated any private message in this session.");
+                sender.sendMessage(Component.text("You have not initiated any private message in this session.", NamedTextColor.RED));
             } else {
                 String message = Arrays.stream(args).skip(1).collect(Collectors.joining(" "));
                 sendPrivateMessage(sender, target, message);
@@ -47,18 +46,17 @@ public record Whispers(Main plugin) implements Listener {
             event.setCancelled(true);
         } else if (plugin.getConfig().getBoolean("ChatCo.replyCommands", true) && (args[0].equalsIgnoreCase("/r") || args[0].equalsIgnoreCase("/reply"))) {
             if (args.length == 1) {
-                sender.sendMessage(ChatColor.YELLOW + "Usage: /r <message>");
+                sender.sendMessage(Component.text("Usage: /r <message>", NamedTextColor.YELLOW));
                 event.setCancelled(true);
                 return;
             }
 
             final Player target = plugin.getChatPlayer(sender).getLastMessenger();
 
-            if ((target == null && plugin.getChatPlayer(sender).LastMessenger != null)
-                    || Utils.isVanished(target)) {
-                sender.sendMessage(ChatColor.RED + "The last person you received a private message from is offline.");
+            if ((target == null && plugin.getChatPlayer(sender).LastMessenger != null) || Utils.isVanished(target)) {
+                sender.sendMessage(Component.text("The last person you received a private message from is offline.", NamedTextColor.RED));
             } else if (target == null) {
-                sender.sendMessage(ChatColor.RED + "You have not received any private messages in this session.");
+                sender.sendMessage(Component.text("You have not received any private messages in this session.", NamedTextColor.RED));
             } else {
                 String message = Arrays.stream(args).skip(1).collect(Collectors.joining(" "));
                 sendPrivateMessage(sender, target, message);
@@ -67,7 +65,7 @@ public record Whispers(Main plugin) implements Listener {
             event.setCancelled(true);
         } else if (args[0].equalsIgnoreCase("/tell") || args[0].equalsIgnoreCase("/msg") || args[0].equalsIgnoreCase("/t") || args[0].equalsIgnoreCase("/w") || args[0].equalsIgnoreCase("/whisper") || args[0].equalsIgnoreCase("/pm")) {
             if (args.length < 3) {
-                sender.sendMessage(ChatColor.YELLOW + "Usage: /w <player> <message>");
+                sender.sendMessage(Component.text("Usage: /w <player> <message>", NamedTextColor.YELLOW));
                 event.setCancelled(true);
                 return;
             }
@@ -75,7 +73,7 @@ public record Whispers(Main plugin) implements Listener {
             final Player target = Bukkit.getPlayerExact(args[1]);
 
             if (target == null || Utils.isVanished(target)) {
-                sender.sendMessage(ChatColor.RED + args[1] + " is offline.");
+                sender.sendMessage(Component.text(args[1] + " is offline.", NamedTextColor.RED));
                 event.setCancelled(true);
                 return;
             }
@@ -95,51 +93,39 @@ public record Whispers(Main plugin) implements Listener {
     }
 
     public Component whisperFormat(Boolean isSending, final Player sender, final Player target) {
-        String legacyMessage = isSending ?
-                plugin.getConfig().getString("ChatCo.whisperFormat.send") :
-                plugin.getConfig().getString("ChatCo.whisperFormat.receive");
-
-        //for (ChatColor color : ChatColor.values()) {
-        //    legacyMessage = legacyMessage.replace("%" + color.name() + "%", color.toString());
-        //}
+        String messageFormat = isSending ? plugin.getConfig().getString("ChatCo.whisperFormat.send") : plugin.getConfig().getString("ChatCo.whisperFormat.receive");
 
         String[] parts;
         String name;
 
+        assert messageFormat != null;
+
         if (isSending) {
             //legacyMessage = legacyMessage.replace("%SENDER%", sender.getName());
-            parts = legacyMessage.split("%RECEIVER%", 2);
+            parts = messageFormat.split("%RECEIVER%", 2);
             name = target.getName();
         } else {
             //legacyMessage = legacyMessage.replace("%RECEIVER%", target.getName());
-            parts = legacyMessage.split("%SENDER%", 2);
+            parts = messageFormat.split("%SENDER%", 2);
             name = sender.getName();
         }
 
         // Part before player name
-        var message = mm(parts[0]);
+        var message = Component.text(parts[0]);
 
         // Player name
-        var messagePlayer = mm(name);
+        var messagePlayer = Component.text(name);
 
         if (plugin.getConfig().getBoolean("ChatCo.whisperOnClick", true)) {
             messagePlayer = messagePlayer.clickEvent(ClickEvent.suggestCommand("/w " + name + " "));
             messagePlayer = messagePlayer.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Whisper to " + name)));
         }
 
-        if (messagePlayer.color() != message.color())
-            messagePlayer = messagePlayer.color(message.color());
-
         message = message.append(messagePlayer);
 
         // Part after player name
         if (parts.length == 2) {
-            Component part1 = mm(parts[1]);
-
-            if (part1.color() != message.color())
-                message = message.color(part1.color());
-
-            message = message.append(part1);
+            message = message.append(Component.text(parts[1]));
         }
 
         return message;
@@ -161,20 +147,21 @@ public record Whispers(Main plugin) implements Listener {
         Component senderMessage = whisperFormat(true, sender, receiver);
         Component receiverMessage = whisperFormat(false, sender, receiver);
 
-        receiverMessage = receiverMessage.append(Component.text(message));
-        senderMessage = senderMessage.append(Component.text(message));
+        var color = NamedTextColor.NAMES.value(Objects.requireNonNull(plugin.getConfig().getString("ChatCo.whisperFormat.color")));
+
+        receiverMessage = receiverMessage.append(Component.text(message)).color(color);
+        senderMessage = senderMessage.append(Component.text(message)).color(color);
 
         sender.sendMessage(senderMessage);
 
         if (isIgnoring && plugin.getConfig().getBoolean("ChatCo.ignoreMessageEnabled", true)) {
-            sender.sendMessage(ChatColor.RED + receiver.getName() + " is ignoring you.");
+            sender.sendMessage(Component.text(receiver.getName() + " is ignoring you.", NamedTextColor.RED));
         } else if (doNotSend && plugin.getConfig().getBoolean("ChatCo.chatDisabledMessageEnabled", true)) {
-            sender.sendMessage(ChatColor.RED + receiver.getName() + "'s chat is disabled.");
+            sender.sendMessage(Component.text(receiver.getName() + "'s chat is disabled.", NamedTextColor.RED));
         } else if (!doNotSend && !isIgnoring) {
             receiver.sendMessage(receiverMessage);
 
-            if (target != null)
-                target.setLastMessenger(sender);
+            if (target != null) target.setLastMessenger(sender);
         }
 
         // Logging

@@ -45,7 +45,7 @@ the changes take effect.
 - **spoilers** - enables or disables spoilers, is **disabled** by default.
 - **whispers** - enables or disables whisper changes, is **enabled** by default.
 - **newcommands** - enables or disables new whisper commands, is **enabled** by default.
-- **whisperlog** - enables or disables whisper logging (whisper logs are saved in /ChatCo/whisperlog.txt), is **
+- **whisperlog** - enables or disables whisper logging (whisper logs are saved in /ChatCo/whisperlog.txt, is **
   disabled**
   by default.)
 

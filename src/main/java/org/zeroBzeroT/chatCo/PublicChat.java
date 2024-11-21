@@ -18,8 +18,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.io.File;
-
-import static org.zeroBzeroT.chatCo.Components.mm;
+import java.util.Objects;
 
 public class PublicChat implements Listener {
     public final Main plugin;
@@ -33,7 +32,7 @@ public class PublicChat implements Listener {
 
     public String replacePrefixColors(String message, final Player player) {
         for (ChatColor color : ChatColor.values()) {
-            if (plugin.getConfig().getString("ChatCo.chatPrefixes." + color.name()) != null && message.startsWith(plugin.getConfig().getString("ChatCo.chatPrefixes." + color.name()))) {
+            if (plugin.getConfig().getString("ChatCo.chatPrefixes." + color.name()) != null && message.startsWith(Objects.requireNonNull(plugin.getConfig().getString("ChatCo.chatPrefixes." + color.name())))) {
 
                 // check for global or player permission
                 if (permissionConfig.getBoolean("ChatCo.chatPrefixes." + color.name(), false) || player.hasPermission("ChatCo.chatPrefixes." + color.name())) {
@@ -50,9 +49,8 @@ public class PublicChat implements Listener {
 
     public String replaceInlineColors(String message, final Player player) {
         for (ChatColor color : ChatColor.values()) {
-            if ((permissionConfig.getBoolean("ChatCo.chatColors." + color.name(), false) || player.hasPermission("ChatCo.chatColors." + color.name()))
-                    && plugin.getConfig().getString("ChatCo.chatColors." + color.name()) != null) {
-                message = message.replace(plugin.getConfig().getString("ChatCo.chatColors." + color.name()), color.toString());
+            if ((permissionConfig.getBoolean("ChatCo.chatColors." + color.name(), false) || player.hasPermission("ChatCo.chatColors." + color.name())) && plugin.getConfig().getString("ChatCo.chatColors." + color.name()) != null) {
+                message = message.replace(Objects.requireNonNull(plugin.getConfig().getString("ChatCo.chatColors." + color.name())), color.toString());
             }
         }
 
@@ -60,22 +58,19 @@ public class PublicChat implements Listener {
     }
 
     /**
-     * @url https://docs.advntr.dev/text.html
+     * See <a href="https://docs.advntr.dev/text.html">Text (Chat Components)</a>
      */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onAsyncChat(AsyncChatEvent event) {
-        // Set format to the plain message, since the player is not needed
-        //String oldFormat = event.getFormat();
-        //event.setFormat("%2$s");
-
         // Plain message
         final Player player = event.getPlayer();
+
         String legacyMessage = LegacyComponentSerializer.legacyAmpersand().serialize(event.message());
         legacyMessage = replacePrefixColors(legacyMessage, player);
         legacyMessage = replaceInlineColors(legacyMessage, player);
 
         // Do not send empty messages
-        if (ChatColor.stripColor(legacyMessage).trim().isEmpty()) {
+        if (legacyMessage.trim().isEmpty()) {
             event.setCancelled(true);
             return;
         }
@@ -91,12 +86,8 @@ public class PublicChat implements Listener {
             sender = sender.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Whisper to " + player.getName())));
         }
 
-        // Message
-        TextComponent message = Component.text("")
-                .append(Component.text("<"))
-                .append(sender)
-                .append(Component.text("> "))
-                .append(messageText);
+        // Build Message
+        TextComponent message = Component.text("").append(Component.text("<")).append(sender).append(Component.text("> ")).append(messageText);
 
         // Send to the players
         if (!plugin.getConfig().getBoolean("ChatCo.chatDisabled", false)) {
@@ -105,8 +96,7 @@ public class PublicChat implements Listener {
                     if (recipient instanceof Player) {
                         ChatPlayer chatPlayer = plugin.getChatPlayer((Player) recipient);
 
-                        if (chatPlayer.chatDisabled)
-                            continue;
+                        if (chatPlayer.chatDisabled) continue;
 
                         if (chatPlayer.isIgnored(player.getName()) && plugin.getConfig().getBoolean("ChatCo.ignoresEnabled", true))
                             continue;

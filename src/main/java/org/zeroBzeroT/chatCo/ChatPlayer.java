@@ -9,17 +9,17 @@ import java.util.List;
 import java.util.UUID;
 
 public class ChatPlayer {
-    public final Player player;
+    public final String name;
     public final UUID playerUUID;
     public boolean chatDisabled;
     public boolean tellsDisabled;
     public String LastMessenger;
     public String LastReceiver;
-    private File IgnoreList;
+    private File IgnoresFile;
     private List<String> ignores;
 
     public ChatPlayer(final Player p) throws IOException {
-        player = p;
+        name = p.getName();
         playerUUID = p.getUniqueId();
         chatDisabled = false;
         tellsDisabled = false;
@@ -32,23 +32,23 @@ public class ChatPlayer {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void saveIgnoreList(final String p) throws IOException {
-        File oldIgnores = new File(Main.dataFolder, "/ignorelists/" + this.player.getName() + ".txt");
-        this.IgnoreList = new File(Main.dataFolder, "/ignorelists/" + this.playerUUID + ".txt");
+        File oldIgnores = new File(Main.dataFolder, "/ignorelists/" + this.name + ".txt");
+        this.IgnoresFile = new File(Main.dataFolder, "/ignorelists/" + this.playerUUID + ".txt");
 
         if (oldIgnores.exists()) {
-            oldIgnores.renameTo(this.IgnoreList);
+            oldIgnores.renameTo(this.IgnoresFile);
         }
 
-        if (!this.IgnoreList.exists()) {
-            this.IgnoreList.getParentFile().mkdir();
-            final FileWriter fwo = new FileWriter(this.IgnoreList, true);
+        if (!this.IgnoresFile.exists()) {
+            this.IgnoresFile.getParentFile().mkdir();
+            final FileWriter fwo = new FileWriter(this.IgnoresFile, true);
             final BufferedWriter bwo = new BufferedWriter(fwo);
             bwo.close();
         }
 
         if (!p.isEmpty()) {
             if (!this.isIgnored(p)) {
-                final FileWriter fwo = new FileWriter(this.IgnoreList, true);
+                final FileWriter fwo = new FileWriter(this.IgnoresFile, true);
                 final BufferedWriter bwo = new BufferedWriter(fwo);
                 bwo.write(p);
                 bwo.newLine();
@@ -56,7 +56,7 @@ public class ChatPlayer {
             } else {
                 this.ignores.remove(p);
                 this.ignores.remove("");
-                final FileWriter fwo = new FileWriter(this.IgnoreList);
+                final FileWriter fwo = new FileWriter(this.IgnoresFile);
                 final BufferedWriter bwo = new BufferedWriter(fwo);
 
                 for (final String print : this.ignores) {
@@ -72,7 +72,7 @@ public class ChatPlayer {
     }
 
     public void unIgnoreAll() throws IOException {
-        final FileWriter fwo = new FileWriter(this.IgnoreList, false);
+        final FileWriter fwo = new FileWriter(this.IgnoresFile, false);
         final BufferedWriter bwo = new BufferedWriter(fwo);
         bwo.flush();
         bwo.close();
@@ -105,7 +105,7 @@ public class ChatPlayer {
     }
 
     private void updateIgnoreList() throws IOException {
-        final FileInputStream file = new FileInputStream(this.IgnoreList);
+        final FileInputStream file = new FileInputStream(this.IgnoresFile);
         final InputStreamReader fileReader = new InputStreamReader(file);
         final BufferedReader inIgnores = new BufferedReader(fileReader);
         String data = inIgnores.readLine();
@@ -123,7 +123,7 @@ public class ChatPlayer {
         return this.ignores.contains(p);
     }
 
-    public List<String> getIgnoreList() {
+    public List<String> getIgnoresFile() {
         return this.ignores;
     }
 }

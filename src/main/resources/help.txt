@@ -13,7 +13,7 @@ If you are interested in only allowing certain users to use certain color codes 
 you will have to open "permissionConfig.yml" and set the value of each color code or chat prefix that you want
 to limit usage of to "false".
 The required permissions to use the different color codes or chat prefixes go by the format:
-ChatCo.chatPrefixes.COLOR: true e.g ChatCo.chatPrefixes.GREEN: true
+ChatCo.chatPrefixes.COLOR: true e.g. ChatCo.chatPrefixes.GREEN: true
 ChatCo.chatColors.COLOR: true e.g. ChatCo.chatColors.WHITE: true
 The permissions are not required to use color codes or chat prefixes if the values in "permissionConfig.yml" are set to true.
 
