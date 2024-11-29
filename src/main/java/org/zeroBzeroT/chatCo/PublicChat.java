@@ -4,10 +4,13 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -18,11 +21,13 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.io.File;
-import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class PublicChat implements Listener {
     public final Main plugin;
     private final FileConfiguration permissionConfig;
+
+    public static final Pattern DEFAULT_URL_PATTERN = Pattern.compile("https?://(?:www\\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b[-a-zA-Z0-9()@:%_\\\\+.~#?&/=]*");
 
     public PublicChat(final Main plugin) {
         this.plugin = plugin;
@@ -30,31 +35,52 @@ public class PublicChat implements Listener {
         permissionConfig = YamlConfiguration.loadConfiguration(customConfig);
     }
 
-    public String replacePrefixColors(String message, final Player player) {
-        for (ChatColor color : ChatColor.values()) {
-            if (plugin.getConfig().getString("ChatCo.chatPrefixes." + color.name()) != null && message.startsWith(Objects.requireNonNull(plugin.getConfig().getString("ChatCo.chatPrefixes." + color.name())))) {
+    public Component replacePrefixColors(Component message, final Player player) {
+        String messagePlain = PlainTextComponentSerializer.plainText().serialize(message);
 
-                // check for global or player permission
-                if (permissionConfig.getBoolean("ChatCo.chatPrefixes." + color.name(), false) || player.hasPermission("ChatCo.chatPrefixes." + color.name())) {
-                    message = color + message;
+        for (String color : NamedTextColor.NAMES.keys()) {
+            String configKey = "ChatCo.chatPrefixes." + color;
+            String configValue = plugin.getConfig().getString(configKey);
+
+            if (configValue != null && messagePlain.startsWith(configValue)) {
+                if (permissionConfig.getBoolean(configKey, false) || player.hasPermission(configKey)) {
+                    return message.color(NamedTextColor.NAMES.value(color));
                 }
-
-                // break here since we found a prefix color code
-                break;
             }
         }
 
         return message;
     }
 
-    public String replaceInlineColors(String message, final Player player) {
-        for (ChatColor color : ChatColor.values()) {
-            if ((permissionConfig.getBoolean("ChatCo.chatColors." + color.name(), false) || player.hasPermission("ChatCo.chatColors." + color.name())) && plugin.getConfig().getString("ChatCo.chatColors." + color.name()) != null) {
-                message = message.replace(Objects.requireNonNull(plugin.getConfig().getString("ChatCo.chatColors." + color.name())), color.toString());
+    public Component replaceInlineColors(Component message, final Player player) {
+        for (String color : NamedTextColor.NAMES.keys()) {
+            String configKey = "ChatCo.chatColors." + color;
+            String configValue = plugin.getConfig().getString(configKey);
+
+            if (configValue != null) {
+                if (permissionConfig.getBoolean(configKey, false) || player.hasPermission(configKey)) {
+                    return message.replaceText(TextReplacementConfig.builder()
+                            .match(Pattern.quote(configValue) + ".*$")
+                            .replacement(s -> s.content(s.content().substring(configValue.length())).color(NamedTextColor.NAMES.value(color)))
+                            .build());
+                }
             }
         }
 
         return message;
+    }
+
+    private Component replaceUrls(Component component) {
+        return component.replaceText(
+                TextReplacementConfig.builder()
+                        .match(DEFAULT_URL_PATTERN)
+                        .replacement(url -> url
+                                .decorate(TextDecoration.UNDERLINED)
+                                .clickEvent(ClickEvent.openUrl(url.content()))
+                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text(url.content())))
+                        )
+                        .build()
+        );
     }
 
     /**
@@ -62,21 +88,26 @@ public class PublicChat implements Listener {
      */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onAsyncChat(AsyncChatEvent event) {
-        // Plain message
-        final Player player = event.getPlayer();
-
         String legacyMessage = LegacyComponentSerializer.legacyAmpersand().serialize(event.message());
-        legacyMessage = replacePrefixColors(legacyMessage, player);
-        legacyMessage = replaceInlineColors(legacyMessage, player);
 
         // Do not send empty messages
         if (legacyMessage.trim().isEmpty()) {
-            event.setCancelled(true);
+            event.viewers().clear();
             return;
         }
 
         // Message text
         Component messageText = Component.text(legacyMessage);
+
+        // Player
+        final Player player = event.getPlayer();
+
+        // Replace color codes
+        messageText = replacePrefixColors(messageText, player);
+        messageText = replaceInlineColors(messageText, player);
+
+        // Clickable links
+        messageText = replaceUrls(messageText);
 
         // Sender name
         Component sender = player.displayName();
