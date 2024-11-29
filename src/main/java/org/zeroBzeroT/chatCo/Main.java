@@ -173,7 +173,6 @@ public class Main extends JavaPlugin {
                 for (final String ignores : getChatPlayer((Player) sender).getIgnoresFile()) {
                     sender.sendMessage(Component.text(ignores, NamedTextColor.YELLOW, TextDecoration.ITALIC));
                     ++i;
-                    ++i;
                 }
 
                 sender.sendMessage(Component.text("You have " + i + " players ignored.", NamedTextColor.YELLOW));

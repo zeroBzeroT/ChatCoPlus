@@ -111,9 +111,6 @@ public class PublicChat implements Listener {
 
         // Do not send it to the players again - no event cancelling, so that other plugins can process the chat
         event.viewers().clear();
-
-        // Write back the old format
-        //event.setFormat(oldFormat);
     }
 
     @EventHandler

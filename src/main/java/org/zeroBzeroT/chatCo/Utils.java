@@ -1,7 +1,5 @@
 package org.zeroBzeroT.chatCo;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -26,10 +24,6 @@ public class Utils {
         }
 
         return false;
-    }
-
-    public static Component mm(String miniMessageString) { // mm, short for MiniMessage
-        return MiniMessage.miniMessage().deserialize(miniMessageString);
     }
 
     /**
