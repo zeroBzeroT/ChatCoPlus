@@ -161,7 +161,7 @@ public record Whispers(Main plugin) {
             }
 
             return true;
-        } else if (plugin.getConfig().getBoolean("ChatCo.replyCommands", true) && (cmd.getName().equalsIgnoreCase("/r") || cmd.getName().equalsIgnoreCase("/reply"))) {
+        } else if (plugin.getConfig().getBoolean("ChatCo.replyCommands", true) && (cmd.getName().equalsIgnoreCase("r") || cmd.getName().equalsIgnoreCase("reply"))) {
             if (args.length == 0) {
                 sender.sendMessage(Component.text("Usage: /r <message>", NamedTextColor.YELLOW));
                 return true;
