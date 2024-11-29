@@ -26,6 +26,7 @@ public class Main extends JavaPlugin {
     public static File dataFolder;
     private static File Help;
     public Collection<ChatPlayer> playerList;
+    private Whispers whispers;
 
     public void onDisable() {
         playerList.clear();
@@ -46,7 +47,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new PublicChat(this), this);
 
         if (getConfig().getBoolean("ChatCo.whisperChangesEnabled", true)) {
-            pm.registerEvents(new Whispers(this), this);
+            whispers = new Whispers(this);
         }
 
         if (getConfig().getBoolean("ChatCo.spoilersEnabled", false)) {
@@ -117,6 +118,7 @@ public class Main extends JavaPlugin {
         }
     }
 
+    @Override
     public boolean onCommand(final @NotNull CommandSender sender, final @NotNull Command cmd, final @NotNull String commandLabel, final String[] args) {
         if (sender instanceof Player) {
             if (cmd.getName().equalsIgnoreCase("togglechat") && getConfig().getBoolean("toggleChatEnabled", true)) {
@@ -175,6 +177,9 @@ public class Main extends JavaPlugin {
                 }
 
                 sender.sendMessage(Component.text("You have " + i + " players ignored.", NamedTextColor.YELLOW));
+                return true;
+            } else if (whispers != null && whispers.onCommand(this, sender, cmd, commandLabel, args)) {
+                // Command was processed by the whisper module
                 return true;
             }
         }

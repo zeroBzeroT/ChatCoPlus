@@ -26,6 +26,22 @@ commands:
   chatco:
     description: Enables or disables whispers and spoilers. Only console input accepted. 'e' enables, 'd' disables.
     usage: /chatco <whispers|spoilers|newcommands|whisperlog> <e|d>
+  tell:
+    description: Whisper to a person.
+    aliases:
+      - whisper
+      - msg
+      - t
+      - w
+      - pm
+  last:
+    description:  Replies to the last person you sent a whisper to.
+    aliases:
+      - l
+  reply:
+    description: Replies to the last person who sent you a whisper this session.
+    aliases:
+      - r
 permissions:
   ChatCo.chatPrefixes.GREEN:
     description: Allows you to use to use Green prefixes in chat

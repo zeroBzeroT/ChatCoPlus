@@ -5,10 +5,10 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -19,79 +19,7 @@ import java.util.stream.Collectors;
 
 import static org.zeroBzeroT.chatCo.Utils.now;
 
-public record Whispers(Main plugin) implements Listener {
-    @EventHandler(ignoreCancelled = true)
-    public void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
-        final String[] args = event.getMessage().split(" ");
-        final Player sender = event.getPlayer();
-
-        if (plugin.getConfig().getBoolean("ChatCo.lastCommand", true) && (args[0].equalsIgnoreCase("/l") || args[0].equalsIgnoreCase("/last"))) {
-            if (args.length == 1) {
-                sender.sendMessage(Component.text("Usage: /l <message>", NamedTextColor.YELLOW));
-                event.setCancelled(true);
-                return;
-            }
-
-            final Player target = plugin.getChatPlayer(sender).getLastReceiver();
-
-            if ((target == null && plugin.getChatPlayer(sender).LastReceiver != null) || Utils.isVanished(target)) {
-                sender.sendMessage(Component.text("The last person you sent a private message to is offline.", NamedTextColor.RED));
-            } else if (target == null) {
-                sender.sendMessage(Component.text("You have not initiated any private message in this session.", NamedTextColor.RED));
-            } else {
-                String message = Arrays.stream(args).skip(1).collect(Collectors.joining(" "));
-                sendPrivateMessage(sender, target, message);
-            }
-
-            event.setCancelled(true);
-        } else if (plugin.getConfig().getBoolean("ChatCo.replyCommands", true) && (args[0].equalsIgnoreCase("/r") || args[0].equalsIgnoreCase("/reply"))) {
-            if (args.length == 1) {
-                sender.sendMessage(Component.text("Usage: /r <message>", NamedTextColor.YELLOW));
-                event.setCancelled(true);
-                return;
-            }
-
-            final Player target = plugin.getChatPlayer(sender).getLastMessenger();
-
-            if ((target == null && plugin.getChatPlayer(sender).LastMessenger != null) || Utils.isVanished(target)) {
-                sender.sendMessage(Component.text("The last person you received a private message from is offline.", NamedTextColor.RED));
-            } else if (target == null) {
-                sender.sendMessage(Component.text("You have not received any private messages in this session.", NamedTextColor.RED));
-            } else {
-                String message = Arrays.stream(args).skip(1).collect(Collectors.joining(" "));
-                sendPrivateMessage(sender, target, message);
-            }
-
-            event.setCancelled(true);
-        } else if (args[0].equalsIgnoreCase("/tell") || args[0].equalsIgnoreCase("/msg") || args[0].equalsIgnoreCase("/t") || args[0].equalsIgnoreCase("/w") || args[0].equalsIgnoreCase("/whisper") || args[0].equalsIgnoreCase("/pm")) {
-            if (args.length < 3) {
-                sender.sendMessage(Component.text("Usage: /w <player> <message>", NamedTextColor.YELLOW));
-                event.setCancelled(true);
-                return;
-            }
-
-            final Player target = Bukkit.getPlayerExact(args[1]);
-
-            if (target == null || Utils.isVanished(target)) {
-                sender.sendMessage(Component.text(args[1] + " is offline.", NamedTextColor.RED));
-                event.setCancelled(true);
-                return;
-            }
-
-            if (plugin.getConfig().getBoolean("ChatCo.newCommands", true)) {
-                String message = Arrays.stream(args).skip(2).collect(Collectors.joining(" "));
-                sendPrivateMessage(sender, target, message);
-                event.setCancelled(true);
-                plugin.getChatPlayer(sender).setLastReceiver(target);
-            } else if (args[0].equalsIgnoreCase("/tell ") || args[0].equalsIgnoreCase("/w ") || args[0].equalsIgnoreCase("/msg ")) {
-                String message = Arrays.stream(args).skip(2).collect(Collectors.joining(" "));
-                sendPrivateMessage(sender, target, message);
-                event.setCancelled(true);
-                plugin.getChatPlayer(sender).setLastReceiver(target);
-            }
-        }
-    }
-
+public record Whispers(Main plugin) {
     public Component whisperFormat(Boolean isSending, final Player sender, final Player target) {
         String messageFormat = isSending ? plugin.getConfig().getString("ChatCo.whisperFormat.send") : plugin.getConfig().getString("ChatCo.whisperFormat.receive");
 
@@ -131,7 +59,7 @@ public record Whispers(Main plugin) implements Listener {
         return message;
     }
 
-    private void sendPrivateMessage(Player sender, Player receiver, String message) {
+    void sendPrivateMessage(Player sender, Player receiver, String message) {
         boolean doNotSend = false;
         boolean isIgnoring = false;
         ChatPlayer target = plugin.getChatPlayer(receiver);
@@ -188,5 +116,72 @@ public record Whispers(Main plugin) implements Listener {
         } catch (IOException ioexception) {
             ioexception.printStackTrace();
         }
+    }
+
+    public boolean onCommand(final @NotNull Main plugin, final @NotNull CommandSender sender, final @NotNull Command cmd, final @NotNull String commandLabel, final String[] args) {
+        if (cmd.getName().equalsIgnoreCase("tell") || cmd.getName().equalsIgnoreCase("msg") || cmd.getName().equalsIgnoreCase("t") || cmd.getName().equalsIgnoreCase("w") || cmd.getName().equalsIgnoreCase("whisper") || cmd.getName().equalsIgnoreCase("pm")) {
+            if (args.length < 2) {
+                sender.sendMessage(Component.text("Usage: /w <player> <message>", NamedTextColor.YELLOW));
+                return true;
+            }
+
+            final Player target = Bukkit.getPlayerExact(args[0]);
+
+            if (target == null || Utils.isVanished(target)) {
+                sender.sendMessage(Component.text(args[0] + " is offline.", NamedTextColor.RED));
+                return true;
+            }
+
+            if (plugin.getConfig().getBoolean("ChatCo.newCommands", true)) {
+                String message = Arrays.stream(args).skip(1).collect(Collectors.joining(" "));
+                sendPrivateMessage((Player) sender, target, message);
+                plugin.getChatPlayer((Player) sender).setLastReceiver(target);
+            } else if (cmd.getName().equalsIgnoreCase("tell") || cmd.getName().equalsIgnoreCase("w") || cmd.getName().equalsIgnoreCase("msg")) {
+                String message = Arrays.stream(args).skip(1).collect(Collectors.joining(" "));
+                sendPrivateMessage((Player) sender, target, message);
+                plugin.getChatPlayer((Player) sender).setLastReceiver(target);
+            }
+
+            return true;
+        } else if (plugin.getConfig().getBoolean("ChatCo.lastCommand", true) && (cmd.getName().equalsIgnoreCase("l") || cmd.getName().equalsIgnoreCase("last"))) {
+            if (args.length == 0) {
+                sender.sendMessage(Component.text("Usage: /l <message>", NamedTextColor.YELLOW));
+                return true;
+            }
+
+            final Player target = plugin.getChatPlayer((Player) sender).getLastReceiver();
+
+            if ((target == null && plugin.getChatPlayer((Player) sender).LastReceiver != null) || Utils.isVanished(target)) {
+                sender.sendMessage(Component.text("The last person you sent a private message to is offline.", NamedTextColor.RED));
+            } else if (target == null) {
+                sender.sendMessage(Component.text("You have not initiated any private message in this session.", NamedTextColor.RED));
+            } else {
+                String message = Arrays.stream(args).skip(0).collect(Collectors.joining(" "));
+                sendPrivateMessage((Player) sender, target, message);
+            }
+
+            return true;
+        } else if (plugin.getConfig().getBoolean("ChatCo.replyCommands", true) && (cmd.getName().equalsIgnoreCase("/r") || cmd.getName().equalsIgnoreCase("/reply"))) {
+            if (args.length == 0) {
+                sender.sendMessage(Component.text("Usage: /r <message>", NamedTextColor.YELLOW));
+                return true;
+            }
+
+            final Player target = plugin.getChatPlayer((Player) sender).getLastMessenger();
+
+            if ((target == null && plugin.getChatPlayer((Player) sender).LastMessenger != null) || Utils.isVanished(target)) {
+                sender.sendMessage(Component.text("The last person you received a private message from is offline.", NamedTextColor.RED));
+            } else if (target == null) {
+                sender.sendMessage(Component.text("You have not received any private messages in this session.", NamedTextColor.RED));
+            } else {
+                String message = Arrays.stream(args).skip(0).collect(Collectors.joining(" "));
+                sendPrivateMessage((Player) sender, target, message);
+            }
+
+            return true;
+        }
+
+        // did not process the command
+        return false;
     }
 }
