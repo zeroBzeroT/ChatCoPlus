@@ -203,7 +203,7 @@ public class Main extends JavaPlugin {
             }
             return false;
         }
-        }
+        
 
         if (cmd.getName().equalsIgnoreCase("chatco")) {
             if (args.length > 0 && args[0].equalsIgnoreCase("reload")) {
@@ -347,3 +347,5 @@ public class Main extends JavaPlugin {
     
         return ignoredBy;
     }
+    
+}
