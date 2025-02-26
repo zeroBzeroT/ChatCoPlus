@@ -180,6 +180,20 @@ public class Main extends JavaPlugin {
                 sender.sendMessage(ChatColor.YELLOW + "" + i + " players ignored.");
                 return true;
             }
+            else if (cmd.getName().equalsIgnoreCase("whoignore")) {
+            List<String> ignoredByList = getChatPlayer((Player) sender).ignoredBy;
+
+            if (ignoredByList.isEmpty()) {
+            sender.sendMessage(ChatColor.YELLOW + "No one is ignoring you.");
+            } else {
+            sender.sendMessage(ChatColor.YELLOW + "Players ignoring you:");
+            for (String name : ignoredByList) {
+                sender.sendMessage(ChatColor.RED + name);
+            }
+            }
+            return true;
+            }
+
         }
 
         if (cmd.getName().equalsIgnoreCase("chatco")) {
@@ -274,17 +288,18 @@ public class Main extends JavaPlugin {
     }
 
     private void ignorePlayer(final Player p, final String target) throws IOException {
-        String message = ChatColor.YELLOW + "Chat messages from " + target + " will be ";
+    ChatPlayer chatPlayer = getChatPlayer(p);
+    String message = ChatColor.YELLOW + "Chat messages from " + target + " will be ";
 
-        if (getChatPlayer(p).isIgnored(target)) {
-            message += "shown.";
-        } else {
-            message += "hidden.";
-        }
-
-        p.sendMessage(message);
-        getChatPlayer(p).saveIgnoreList(target);
+    if (chatPlayer.isIgnored(target)) {
+        message += "shown.";
+    } else {
+        message += "hidden.";
     }
+
+    p.sendMessage(message);
+    chatPlayer.saveIgnoreList(target);
+}
 
     private void unIgnoreAll(final Player p) throws IOException {
         getChatPlayer(p).unIgnoreAll();
