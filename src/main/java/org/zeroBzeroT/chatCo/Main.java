@@ -180,30 +180,7 @@ public class Main extends JavaPlugin {
                 sender.sendMessage(ChatColor.YELLOW + "" + i + " players ignored.");
                 return true;
             }
-            else if (sender instanceof Player) {
-                if (cmd.getName().equalsIgnoreCase("whoignoredme")) {
-                    try {
-                        Player player = (Player) sender;
-                        List<String> ignoredBy = getIgnoredByList(player);
-        
-                        if (ignoredBy.isEmpty()) {
-                            player.sendMessage(ChatColor.GREEN + "No one is ignoring you.");
-                        } else {
-                            player.sendMessage(ChatColor.YELLOW + "You are being ignored by:");
-                            for (String ignorer : ignoredBy) {
-                                player.sendMessage(ChatColor.RED + "- " + ignorer);
-                            }
-                        }
-                        return true;
-                    } catch (Exception e) {
-                        sender.sendMessage(ChatColor.RED + "An error occurred while fetching the ignore list.");
-                        e.printStackTrace();
-                    }
-                }
-            }
-            return false;
         }
-        
 
         if (cmd.getName().equalsIgnoreCase("chatco")) {
             if (args.length > 0 && args[0].equalsIgnoreCase("reload")) {
@@ -318,34 +295,4 @@ public class Main extends JavaPlugin {
     public void remove(Player player) {
         playerList.removeIf(p -> p.player.equals(player));
     }
-    
-    private List<String> getIgnoredByList(Player target) throws IOException {
-        List<String> ignoredBy = new ArrayList<>();
-    
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            ChatPlayer chatPlayer = getChatPlayer(onlinePlayer);
-            if (chatPlayer.isIgnored(target.getName())) {
-                ignoredBy.add(onlinePlayer.getName());
-            }
-        }
-    
-        File ignoreFolder = new File(getDataFolder(), "/ignorelists/");
-        if (ignoreFolder.exists() && ignoreFolder.isDirectory()) {
-            for (File file : ignoreFolder.listFiles()) {
-                if (file.isFile()) {
-                    try {
-                        ChatPlayer offlineChatPlayer = new ChatPlayer(file);
-                        if (offlineChatPlayer.isIgnored(target.getName())) {
-                            ignoredBy.add(file.getName().replace(".txt", ""));
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-    
-        return ignoredBy;
-    }
-    
 }
