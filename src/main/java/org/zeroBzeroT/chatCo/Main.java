@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import static org.zeroBzeroT.chatCo.Utils.saveStreamToFile;
 
 public class Main extends JavaPlugin {
+
     public static File PermissionConfig;
     public static File WhisperLog;
     public static File dataFolder;
@@ -173,19 +174,18 @@ public class Main extends JavaPlugin {
 
                 sender.sendMessage(ChatColor.YELLOW + "" + i + " players ignored.");
                 return true;
-            }
-            else if (cmd.getName().equalsIgnoreCase("whoignore")) {
+            } else if (cmd.getName().equalsIgnoreCase("whoignore")) {
                 List<String> ignoredByList = getChatPlayer((Player) sender).getIgnoredByList();
 
-            if (ignoredByList.isEmpty()) {
-            sender.sendMessage(ChatColor.YELLOW + "No one is ignoring you.");
-            } else {
-            sender.sendMessage(ChatColor.YELLOW + "Players ignoring you:");
-            for (String name : ignoredByList) {
-                sender.sendMessage(ChatColor.RED + name);
-            }
-            }
-            return true;
+                if (ignoredByList.isEmpty()) {
+                    sender.sendMessage(ChatColor.YELLOW + "No one is ignoring you.");
+                } else {
+                    sender.sendMessage(ChatColor.YELLOW + "Players ignoring you:");
+                    for (String name : ignoredByList) {
+                        sender.sendMessage(ChatColor.RED + name);
+                    }
+                }
+                return true;
             }
 
         }
@@ -248,7 +248,7 @@ public class Main extends JavaPlugin {
 
     public ChatPlayer getChatPlayer(final Player p) {
         for (final ChatPlayer chatPlayer : playerList) {
-            if (chatPlayer.playerUUID.equals(p .getUniqueId())) {
+            if (chatPlayer.playerUUID.equals(p.getUniqueId())) {
                 return chatPlayer;
             }
         }
@@ -282,18 +282,18 @@ public class Main extends JavaPlugin {
     }
 
     private void ignorePlayer(final Player p, final String target) throws IOException {
-    ChatPlayer chatPlayer = getChatPlayer(p);
-    String message = ChatColor.YELLOW + "Chat messages from " + target + " will be ";
+        ChatPlayer chatPlayer = getChatPlayer(p);
+        String message = ChatColor.YELLOW + "Chat messages from " + target + " will be ";
 
-    if (chatPlayer.isIgnored(target)) {
-        message += "shown.";
-    } else {
-        message += "hidden.";
+        if (chatPlayer.isIgnored(target)) {
+            message += "shown.";
+        } else {
+            message += "hidden.";
+        }
+
+        p.sendMessage(message);
+        chatPlayer.saveIgnoreList(target);
     }
-
-    p.sendMessage(message);
-    chatPlayer.saveIgnoreList(target);
-}
 
     private void unIgnoreAll(final Player p) throws IOException {
         getChatPlayer(p).unIgnoreAll();
