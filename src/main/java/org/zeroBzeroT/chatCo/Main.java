@@ -1,11 +1,12 @@
 package org.zeroBzeroT.chatCo;
 
-import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,13 +16,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-
 import static org.zeroBzeroT.chatCo.Utils.saveStreamToFile;
 
 public class Main extends JavaPlugin {
@@ -181,7 +175,7 @@ public class Main extends JavaPlugin {
                 return true;
             }
             else if (cmd.getName().equalsIgnoreCase("whoignore")) {
-            List<String> ignoredByList = getChatPlayer((Player) sender).ignoredBy;
+                List<String> ignoredByList = getChatPlayer((Player) sender).getIgnoredByList();
 
             if (ignoredByList.isEmpty()) {
             sender.sendMessage(ChatColor.YELLOW + "No one is ignoring you.");
