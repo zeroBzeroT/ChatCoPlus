@@ -126,37 +126,37 @@ public class ChatPlayer {
         this.LastReceiver = sender.getName();
     }
 
-   private void updateIgnoreList() throws IOException {
-    final FileInputStream file = new FileInputStream(this.IgnoreList);
-    final InputStreamReader fileReader = new InputStreamReader(file);
-    final BufferedReader inIgnores = new BufferedReader(fileReader);
-    String data = inIgnores.readLine();
-    this.ignores = new ArrayList<>();
-
-    while (data != null) {
-        this.ignores.add(data);
-        data = inIgnores.readLine();
-    }
-    file.close();
-
-    File ignoredByFile = new File(Main.dataFolder, "/ignorelists/" + this.playerUUID + "_ignoredByPlayers.txt");
-
-    if (ignoredByFile.exists()) {
-        final FileInputStream ignoredByStream = new FileInputStream(ignoredByFile);
-        final InputStreamReader ignoredByReader = new InputStreamReader(ignoredByStream);
-        final BufferedReader inIgnoredBy = new BufferedReader(ignoredByReader);
-        String ignoredByData = inIgnoredBy.readLine();
-        this.ignoredBy = new ArrayList<>();
-
-        while (ignoredByData != null) {
-            this.ignoredBy.add(ignoredByData);
-            ignoredByData = inIgnoredBy.readLine();
+    private void updateIgnoreList() throws IOException {
+        final FileInputStream file = new FileInputStream(this.IgnoreList);
+        final InputStreamReader fileReader = new InputStreamReader(file);
+        final BufferedReader inIgnores = new BufferedReader(fileReader);
+        String data = inIgnores.readLine();
+        this.ignores = new ArrayList<>();
+    
+        while (data != null) {
+            this.ignores.add(data);
+            data = inIgnores.readLine();
         }
-        ignoredByStream.close();
-    } else {
+        file.close();
+    
+        // Ensure ignoredBy is always initialized
         this.ignoredBy = new ArrayList<>();
+    
+        File ignoredByFile = new File(Main.dataFolder, "/ignorelists/" + this.playerUUID + "_ignoredByPlayers.txt");
+    
+        if (ignoredByFile.exists()) {
+            final FileInputStream ignoredByStream = new FileInputStream(ignoredByFile);
+            final InputStreamReader ignoredByReader = new InputStreamReader(ignoredByStream);
+            final BufferedReader inIgnoredBy = new BufferedReader(ignoredByReader);
+            String ignoredByData = inIgnoredBy.readLine();
+    
+            while (ignoredByData != null) {
+                this.ignoredBy.add(ignoredByData);
+                ignoredByData = inIgnoredBy.readLine();
+            }
+            ignoredByStream.close();
+        }
     }
-}
 
 
     public boolean isIgnored(final String p) {
@@ -170,5 +170,8 @@ public boolean isIgnoredBy(final String p) {
 
     public List<String> getIgnoreList() {
         return this.ignores;
+    }
+    public List<String> getIgnoredByList() {
+        return this.ignoredBy;
     }
 }
