@@ -28,11 +28,13 @@ public class Main extends JavaPlugin {
     private static File Help;
     public Collection<ChatPlayer> playerList;
     private Whispers whispers;
-
+    
+    @Override
     public void onDisable() {
         playerList.clear();
     }
 
+    @Override
     public void onEnable() {
         playerList = Collections.synchronizedCollection(new ArrayList<>());
 
