@@ -1,12 +1,18 @@
 package org.zeroBzeroT.chatCo;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public class ChatPlayer {
     public final Player player;
@@ -17,6 +23,8 @@ public class ChatPlayer {
     public String LastReceiver;
     private File IgnoreList;
     private List<String> ignores;
+    private List<String> ignoredBy;
+
 
     public ChatPlayer(final Player p) throws IOException {
         player = p;
