@@ -23,6 +23,10 @@ commands:
   ignorelist:
     description: Returns a list of all currently ignored players.
     usage: /ignorelist
+  whoignore:
+    description: Lists all players who are ignoring you.
+    usage: /whoignore
+
   chatco:
     description: Enables or disables whispers and spoilers. Only console input accepted. 'e' enables, 'd' disables.
     usage: /chatco <whispers|spoilers|newcommands|whisperlog> <e|d>

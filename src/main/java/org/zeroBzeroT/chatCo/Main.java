@@ -1,8 +1,12 @@
 package org.zeroBzeroT.chatCo;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -11,14 +15,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-
 import static org.zeroBzeroT.chatCo.Utils.saveStreamToFile;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 public class Main extends JavaPlugin {
     public static File PermissionConfig;
@@ -27,11 +28,13 @@ public class Main extends JavaPlugin {
     private static File Help;
     public Collection<ChatPlayer> playerList;
     private Whispers whispers;
-
+    
+    @Override
     public void onDisable() {
         playerList.clear();
     }
 
+    @Override
     public void onEnable() {
         playerList = Collections.synchronizedCollection(new ArrayList<>());
 
@@ -180,7 +183,20 @@ public class Main extends JavaPlugin {
             } else if (whispers != null && whispers.onCommand(this, sender, cmd, commandLabel, args)) {
                 // Command was processed by the whisper module
                 return true;
+            } else if (cmd.getName().equalsIgnoreCase("whoignore")) {
+                List<String> ignoredByList = getChatPlayer((Player) sender).getIgnoredByList();
+            
+                if (ignoredByList.isEmpty()) {
+                    sender.sendMessage(Component.text("No one is ignoring you.", NamedTextColor.YELLOW));
+                } else {
+                    sender.sendMessage(Component.text("Players ignoring you:", NamedTextColor.YELLOW));
+                    for (String name : ignoredByList) {
+                        sender.sendMessage(Component.text(name, NamedTextColor.RED));
+                    }
+                }
+                return true;
             }
+            
         }
 
         if (cmd.getName().equalsIgnoreCase("chatco")) {
