@@ -25,6 +25,8 @@ public class ChatPlayer {
     private List<String> ignores;
     private List<String> ignoredBy;
 
+    public boolean rulesNoticeSent;
+
 
     public ChatPlayer(final Player p) throws IOException {
         name = p.getName();
@@ -34,7 +36,8 @@ public class ChatPlayer {
         LastMessenger = null;
         LastReceiver = null;
         ignoredBy = new ArrayList<>();
-        
+        rulesNoticeSent = false;
+
         // create the ignore-list
         saveIgnoreList("");
     }
