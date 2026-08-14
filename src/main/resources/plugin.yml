@@ -27,6 +27,9 @@ commands:
     description: Enables or disables whispers and spoilers. Only console input accepted. 'e' enables, 'd' disables.
     usage: /chatco <whispers|spoilers|newcommands|whisperlog> <e|d>
 permissions:
+  ChatCo.linkBlock.bypass:
+    description: Allows you to post links that are ghost blocked for everyone else
+    default: op
   ChatCo.chatPrefixes.GREEN:
     description: Allows you to use to use Green prefixes in chat
     default: false

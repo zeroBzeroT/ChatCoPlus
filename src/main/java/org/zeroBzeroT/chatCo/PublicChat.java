@@ -98,6 +98,17 @@ public class PublicChat implements Listener {
                 .append(componentFromLegacyText("> "))
                 .append(messageText);
 
+        // Ghost blocked links: only the sender sees his own message
+        if (plugin.getLinkBlocker().isBlocked(player, legacyMessage)) {
+            player.sendMessage(message);
+            plugin.getLinkBlocker().log(player, "Chat message", legacyMessage);
+
+            // Cancel, so that the message does not reach the console or any other plugin
+            event.viewers().clear();
+            event.setCancelled(true);
+            return;
+        }
+
         // Send to the players
         if (!plugin.getConfig().getBoolean("ChatCo.chatDisabled", false)) {
             for (Audience recipient : event.viewers()) {

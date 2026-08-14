@@ -26,10 +26,12 @@ import static org.zeroBzeroT.chatCo.Utils.saveStreamToFile;
 
 public class Main extends JavaPlugin {
     public static File PermissionConfig;
+    public static File BlockedDomains;
     public static File WhisperLog;
     public static File dataFolder;
     private static File Help;
     public Collection<ChatPlayer> playerList;
+    private LinkBlocker linkBlocker;
 
     public void onDisable() {
         playerList.clear();
@@ -44,6 +46,8 @@ public class Main extends JavaPlugin {
 
         saveResourceFiles();
         toggleConfigValue(0);
+
+        linkBlocker = new LinkBlocker(this);
 
         final PluginManager pm = getServer().getPluginManager();
 
@@ -99,6 +103,7 @@ public class Main extends JavaPlugin {
     private void saveResourceFiles() {
         Main.dataFolder = getDataFolder();
         Main.PermissionConfig = new File(Main.dataFolder, "permissionConfig.yml");
+        Main.BlockedDomains = new File(Main.dataFolder, "blockedDomains.txt");
         Main.WhisperLog = new File(Main.dataFolder, "whisperlog.txt");
         Main.Help = new File(Main.dataFolder, "help.txt");
 
@@ -118,6 +123,11 @@ public class Main extends JavaPlugin {
         if (!Main.PermissionConfig.exists()) {
             Main.PermissionConfig.getParentFile().mkdirs();
             saveStreamToFile(getResource("permissionConfig.yml"), Main.PermissionConfig);
+        }
+
+        if (!Main.BlockedDomains.exists()) {
+            Main.BlockedDomains.getParentFile().mkdirs();
+            saveStreamToFile(getResource("blockedDomains.txt"), Main.BlockedDomains);
         }
     }
 
@@ -186,6 +196,7 @@ public class Main extends JavaPlugin {
             if (args.length > 0 && args[0].equalsIgnoreCase("reload")) {
                 reloadConfig();
                 saveConfig();
+                linkBlocker.reload();
                 sender.sendMessage("Config reloaded");
                 return true;
             }
@@ -236,6 +247,10 @@ public class Main extends JavaPlugin {
         }
 
         return false;
+    }
+
+    public LinkBlocker getLinkBlocker() {
+        return linkBlocker;
     }
 
     public ChatPlayer getChatPlayer(final Player p) {

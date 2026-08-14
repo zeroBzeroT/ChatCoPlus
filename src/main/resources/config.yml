@@ -16,6 +16,14 @@ ChatCo:
   lastCommand: true
   whisperLog: false
   whisperMonitoring: false
+  # Ghost blocking of file sharing links: the sender still sees his own message,
+  # but it never reaches the other players, the console or any other plugin.
+  # The blocked domains are listed in blockedDomains.txt, subdomains are covered as well.
+  # Players with the permission ChatCo.linkBlock.bypass are not affected.
+  linkBlock:
+    enabled: true
+    blockWhispers: true
+    logToConsole: false
   whisperFormat:
     receive: "%LIGHT_PURPLE%%SENDER% whispers: "
     send: "%LIGHT_PURPLE%To %RECEIVER%: "
