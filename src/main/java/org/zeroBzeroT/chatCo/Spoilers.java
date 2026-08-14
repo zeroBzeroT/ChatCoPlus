@@ -30,7 +30,7 @@ public class Spoilers implements Listener {
 
             final int Length = event.getMessage().length();
             final Player name = event.getPlayer();
-            this.Spoiler[0] = "[ " + event.getMessage().substring(9, Length - 10) + " ] by R%)[".replace("R%)", ChatColor.RED.toString()) + name.getDisplayName() + "]";
+            this.Spoiler[0] = "[ " + event.getMessage().substring(9, Length - 10) + " ] by R%)[".replace("R%)", ChatColor.RED.toString()) + name.displayName() + "]";
             event.setMessage(ChatColor.BLACK + "SPOILER");
         } else {
             event.setMessage(check);

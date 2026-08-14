@@ -46,22 +46,23 @@ the changes take effect.
 - **spoilers** - enables or disables spoilers, is **disabled** by default.
 - **whispers** - enables or disables whisper changes, is **enabled** by default.
 - **newcommands** - enables or disables new whisper commands, is **enabled** by default.
-- **whisperlog** - enables or disables whisper logging (whisper logs are saved in /ChatCo/whisperlog.txt), is **
+- **whisperlog** - enables or disables whisper logging (whisper logs are saved in /ChatCo/whisperlog.txt, is **
   disabled**
   by default.)
 
 ## Player Commands
 
-- **/ignore {player}** - ignores or un-ignores the player.
-- **/ignorelist** - prints all ignored players.
-- **/unignoreall** - clears ignore list
-- **/togglechat** - disables regular chatting for the player - NOT PERSISTENT.
-- **/toggletells** - disables tells for the player - NOT PERSISTENT,
+- **/ignore {player}** - Ignores or un-ignores the player.
+- **/ignorelist** - Prints all ignored players.
+- **/unignoreall** - Clears ignore list
+- **/togglechat** - Disables regular chatting for the player - NOT PERSISTENT.
+- **/toggletells** - Disables tells for the player - NOT PERSISTENT,
 
 ## Whisper Related Player Commands
 
-- **/r** and **/reply** - replies to the last person who sent you a whisper this session.
-- **/l** and **/last** - replies to the last person you sent a whisper to
+- **/w {player}** and **/whisper {player}** - Whisper to a person.
+- **/r** and **/reply** - Replies to the last person who sent you a whisper this session.
+- **/l** and **/last** - Replies to the last person you sent a whisper to.
 
 ## Config
 
@@ -96,7 +97,7 @@ Use `/chatco reload` after editing the domain list.
 
 ## Tested Minecraft Versions
 
-- 1.12.2
+- 1.20.4
 
 ## Statistics
 

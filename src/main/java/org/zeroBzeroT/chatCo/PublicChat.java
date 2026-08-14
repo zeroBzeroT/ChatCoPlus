@@ -4,10 +4,13 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -18,12 +21,13 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.io.File;
-
-import static org.zeroBzeroT.chatCo.Utils.componentFromLegacyText;
+import java.util.regex.Pattern;
 
 public class PublicChat implements Listener {
     public final Main plugin;
     private final FileConfiguration permissionConfig;
+
+    public static final Pattern DEFAULT_URL_PATTERN = Pattern.compile("https?://(?:www\\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b[-a-zA-Z0-9()@:%_\\\\+.~#?&/=]*");
 
     public PublicChat(final Main plugin) {
         this.plugin = plugin;
@@ -31,72 +35,90 @@ public class PublicChat implements Listener {
         permissionConfig = YamlConfiguration.loadConfiguration(customConfig);
     }
 
-    public String replacePrefixColors(String message, final Player player) {
-        for (ChatColor color : ChatColor.values()) {
-            if (plugin.getConfig().getString("ChatCo.chatPrefixes." + color.name()) != null && message.startsWith(plugin.getConfig().getString("ChatCo.chatPrefixes." + color.name()))) {
+    public Component replacePrefixColors(Component message, final Player player) {
+        String messagePlain = PlainTextComponentSerializer.plainText().serialize(message);
 
-                // check for global or player permission
-                if (permissionConfig.getBoolean("ChatCo.chatPrefixes." + color.name(), false) || player.hasPermission("ChatCo.chatPrefixes." + color.name())) {
-                    message = color + message;
+        for (String color : NamedTextColor.NAMES.keys()) {
+            String configKey = "ChatCo.chatPrefixes." + color;
+            String configValue = plugin.getConfig().getString(configKey);
+
+            if (configValue != null && messagePlain.startsWith(configValue)) {
+                if (permissionConfig.getBoolean(configKey, false) || player.hasPermission(configKey)) {
+                    return message.color(NamedTextColor.NAMES.value(color));
                 }
-
-                // break here since we found a prefix color code
-                break;
             }
         }
 
         return message;
     }
 
-    public String replaceInlineColors(String message, final Player player) {
-        for (ChatColor color : ChatColor.values()) {
-            if ((permissionConfig.getBoolean("ChatCo.chatColors." + color.name(), false) || player.hasPermission("ChatCo.chatColors." + color.name()))
-                    && plugin.getConfig().getString("ChatCo.chatColors." + color.name()) != null) {
-                message = message.replace(plugin.getConfig().getString("ChatCo.chatColors." + color.name()), color.toString());
+    public Component replaceInlineColors(Component message, final Player player) {
+        for (String color : NamedTextColor.NAMES.keys()) {
+            String configKey = "ChatCo.chatColors." + color;
+            String configValue = plugin.getConfig().getString(configKey);
+
+            if (configValue != null) {
+                if (permissionConfig.getBoolean(configKey, false) || player.hasPermission(configKey)) {
+                    return message.replaceText(TextReplacementConfig.builder()
+                            .match(Pattern.quote(configValue) + ".*$")
+                            .replacement(s -> s.content(s.content().substring(configValue.length())).color(NamedTextColor.NAMES.value(color)))
+                            .build());
+                }
             }
         }
 
         return message;
+    }
+
+    private Component replaceUrls(Component component) {
+        return component.replaceText(
+                TextReplacementConfig.builder()
+                        .match(DEFAULT_URL_PATTERN)
+                        .replacement(url -> url
+                                .decorate(TextDecoration.UNDERLINED)
+                                .clickEvent(ClickEvent.openUrl(url.content()))
+                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text(url.content())))
+                        )
+                        .build()
+        );
     }
 
     /**
-     * @url https://docs.advntr.dev/text.html
+     * See <a href="https://docs.advntr.dev/text.html">Text (Chat Components)</a>
      */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onAsyncChat(AsyncChatEvent event) {
-        // Set format to the plain message, since the player is not needed
-        //String oldFormat = event.getFormat();
-        //event.setFormat("%2$s");
-
-        // Plain message
-        final Player player = event.getPlayer();
         String legacyMessage = LegacyComponentSerializer.legacyAmpersand().serialize(event.message());
-        legacyMessage = replacePrefixColors(legacyMessage, player);
-        legacyMessage = replaceInlineColors(legacyMessage, player);
 
         // Do not send empty messages
-        if (ChatColor.stripColor(legacyMessage).trim().isEmpty()) {
-            event.setCancelled(true);
+        if (legacyMessage.trim().isEmpty()) {
+            event.viewers().clear();
             return;
         }
 
         // Message text
-        TextComponent messageText = componentFromLegacyText(legacyMessage);
+        Component messageText = Component.text(legacyMessage);
+
+        // Player
+        final Player player = event.getPlayer();
+
+        // Replace color codes
+        messageText = replacePrefixColors(messageText, player);
+        messageText = replaceInlineColors(messageText, player);
+
+        // Clickable links
+        messageText = replaceUrls(messageText);
 
         // Sender name
-        TextComponent messageSender = componentFromLegacyText(player.getDisplayName());
+        Component sender = player.displayName();
 
         if (plugin.getConfig().getBoolean("ChatCo.whisperOnClick", true)) {
-            messageSender = messageSender.clickEvent(ClickEvent.suggestCommand("/w " + player.getName() + " "));
-            messageSender = messageSender.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Whisper to " + player.getName())));
+            sender = sender.clickEvent(ClickEvent.suggestCommand("/w " + player.getName() + " "));
+            sender = sender.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Whisper to " + player.getName())));
         }
 
-        // Message
-        TextComponent message = Component.text("")
-                .append(componentFromLegacyText("<"))
-                .append(messageSender)
-                .append(componentFromLegacyText("> "))
-                .append(messageText);
+        // Build Message
+        TextComponent message = Component.text("").append(Component.text("<")).append(sender).append(Component.text("> ")).append(messageText);
 
         // Ghost blocked links: only the sender sees his own message
         if (plugin.getLinkBlocker().isBlocked(player, legacyMessage)) {
@@ -116,8 +138,7 @@ public class PublicChat implements Listener {
                     if (recipient instanceof Player) {
                         ChatPlayer chatPlayer = plugin.getChatPlayer((Player) recipient);
 
-                        if (chatPlayer.chatDisabled)
-                            continue;
+                        if (chatPlayer.chatDisabled) continue;
 
                         if (chatPlayer.isIgnored(player.getName()) && plugin.getConfig().getBoolean("ChatCo.ignoresEnabled", true))
                             continue;
@@ -132,9 +153,6 @@ public class PublicChat implements Listener {
 
         // Do not send it to the players again - no event cancelling, so that other plugins can process the chat
         event.viewers().clear();
-
-        // Write back the old format
-        //event.setFormat(oldFormat);
     }
 
     @EventHandler
