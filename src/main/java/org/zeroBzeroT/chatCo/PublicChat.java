@@ -3,7 +3,6 @@ package org.zeroBzeroT.chatCo;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -143,6 +142,24 @@ public class PublicChat implements Listener {
         final Player player = event.getPlayer();
         final boolean gated = plugin.isGated(player);
 
+        Component sender = player.displayName();
+
+        if (plugin.getConfig().getBoolean("ChatCo.whisperOnClick", true)) {
+            sender = sender.clickEvent(ClickEvent.suggestCommand("/w " + player.getName() + " "));
+            sender = sender.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Whisper to " + player.getName())));
+        }
+
+        // Ghost blocked links: only the sender sees his own message, unfiltered
+        if (plugin.getDomainBlocker().isBlocked(player, legacyMessage)) {
+            player.sendMessage(buildMessage(player, sender, legacyMessage));
+            plugin.getDomainBlocker().log(player, "Chat message", legacyMessage);
+
+            // Cancel, so that the message does not reach the console or any other plugin
+            event.viewers().clear();
+            event.setCancelled(true);
+            return;
+        }
+
         // Apply gate filters (word filter + link block) to the outgoing text
         if (gated) {
             if (plugin.getConfig().getBoolean("ChatCo.playtimeGate.wordFilter.enabled", true)
@@ -161,13 +178,6 @@ public class PublicChat implements Listener {
             event.viewers().clear();
             event.setCancelled(true);
             return;
-        }
-
-        Component sender = player.displayName();
-
-        if (plugin.getConfig().getBoolean("ChatCo.whisperOnClick", true)) {
-            sender = sender.clickEvent(ClickEvent.suggestCommand("/w " + player.getName() + " "));
-            sender = sender.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Whisper to " + player.getName())));
         }
 
         // Send to the players, per-recipient so gated viewers can see a filtered version

@@ -5,6 +5,9 @@ on:
     tags:
       - '*'
 
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -14,37 +17,23 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Java
-        uses: actions/setup-java@v4.5.0
+        uses: actions/setup-java@v4.7.1
         with:
           java-version: '21'
           distribution: 'temurin'
           check-latest: true
 
-      - name: Cache
-        uses: actions/cache@v4.1.2
-        with:
-          path: ~/.m2
-          key: '${{ runner.os }}-m2-${{ hashFiles(''**/pom.xml'') }}'
-          restore-keys: '${{ runner.os }}-m2'
+      - name: Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Package
-        run: mvn --batch-mode --show-version --errors package --file pom.xml
+        run: ./gradlew build --stacktrace
 
-      - name: Draft
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
+          name: ${{ github.ref_name }}
           body: 'automated release at commit ${{ github.sha }}'
           draft: false
           prerelease: false
-
-      - name: Release
-        uses: csexton/release-asset-action@v3
-        with:
-          pattern: "target/ChatCoPlus-*.jar"
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          release-url: ${{ steps.create_release.outputs.upload_url }}
+          files: build/libs/ChatCoPlus-*.jar

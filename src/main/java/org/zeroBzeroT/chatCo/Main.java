@@ -24,12 +24,14 @@ import net.kyori.adventure.text.format.TextDecoration;
 
 public class Main extends JavaPlugin {
     public static File PermissionConfig;
+    public static File BlockedDomains;
     public static File WhisperLog;
     public static File dataFolder;
     private static File Help;
     public static File WordListFile;
     public static File WhiteListFile;
     public Collection<ChatPlayer> playerList;
+    private DomainBlocker domainBlocker;
     private Whispers whispers;
     private WordFilter wordFilter;
     private LinkBlocker linkBlocker;
@@ -59,6 +61,8 @@ public class Main extends JavaPlugin {
         toggleConfigValue(0);
         loadFilters();
         reloadGateConfig();
+
+        domainBlocker = new DomainBlocker(this);
 
         final PluginManager pm = getServer().getPluginManager();
 
@@ -155,6 +159,7 @@ public class Main extends JavaPlugin {
     private void saveResourceFiles() {
         Main.dataFolder = getDataFolder();
         Main.PermissionConfig = new File(Main.dataFolder, "permissionConfig.yml");
+        Main.BlockedDomains = new File(Main.dataFolder, "blockedDomains.txt");
         Main.WhisperLog = new File(Main.dataFolder, "whisperlog.txt");
         Main.Help = new File(Main.dataFolder, "help.txt");
         Main.WordListFile = new File(Main.dataFolder, "wordlist.txt");
@@ -186,6 +191,11 @@ public class Main extends JavaPlugin {
         if (!Main.PermissionConfig.exists()) {
             Main.PermissionConfig.getParentFile().mkdirs();
             saveStreamToFile(getResource("permissionConfig.yml"), Main.PermissionConfig);
+        }
+
+        if (!Main.BlockedDomains.exists()) {
+            Main.BlockedDomains.getParentFile().mkdirs();
+            saveStreamToFile(getResource("blockedDomains.txt"), Main.BlockedDomains);
         }
     }
 
@@ -271,6 +281,7 @@ public class Main extends JavaPlugin {
             if (args.length > 0 && args[0].equalsIgnoreCase("reload")) {
                 reloadConfig();
                 saveConfig();
+                domainBlocker.reload();
                 loadFilters();
                 reloadGateConfig();
                 if (publicChat != null) publicChat.reload();
@@ -324,6 +335,10 @@ public class Main extends JavaPlugin {
         }
 
         return false;
+    }
+
+    public DomainBlocker getDomainBlocker() {
+        return domainBlocker;
     }
 
     public ChatPlayer getChatPlayer(final Player p) {

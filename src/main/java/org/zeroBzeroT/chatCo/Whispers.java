@@ -64,6 +64,10 @@ public record Whispers(Main plugin) {
         boolean isIgnoring = false;
         ChatPlayer target = plugin.getChatPlayer(receiver);
 
+        // Ghost blocked links: only the sender sees his own message
+        final boolean linkBlocked = plugin.getConfig().getBoolean("ChatCo.linkBlock.blockWhispers", true)
+                && plugin.getDomainBlocker().isBlocked(sender, message);
+
         if (target != null && target.tellsDisabled) {
             doNotSend = true;
         }
@@ -82,7 +86,10 @@ public record Whispers(Main plugin) {
 
         sender.sendMessage(senderMessage);
 
-        if (isIgnoring && plugin.getConfig().getBoolean("ChatCo.ignoreMessageEnabled", true)) {
+        if (linkBlocked) {
+            // No hint for the sender that his whisper was dropped
+            plugin.getDomainBlocker().log(sender, "Whisper to " + receiver.getName(), message);
+        } else if (isIgnoring && plugin.getConfig().getBoolean("ChatCo.ignoreMessageEnabled", true)) {
             sender.sendMessage(Component.text(receiver.getName() + " is ignoring you.", NamedTextColor.RED));
         } else if (doNotSend && plugin.getConfig().getBoolean("ChatCo.chatDisabledMessageEnabled", true)) {
             sender.sendMessage(Component.text(receiver.getName() + "'s chat is disabled.", NamedTextColor.RED));
@@ -95,7 +102,9 @@ public record Whispers(Main plugin) {
         // Logging
         String logText = message;
 
-        if (doNotSend || isIgnoring) {
+        if (linkBlocked) {
+            logText = "***LINK BLOCKED*** " + logText;
+        } else if (doNotSend || isIgnoring) {
             logText = "***WAS NOT SENT*** " + logText;
         }
         if (plugin.getConfig().getBoolean("ChatCo.whisperLog", false)) {

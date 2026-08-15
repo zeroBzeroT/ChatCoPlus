@@ -21,6 +21,7 @@ ChatCoPlus is a plugin for **Spigot Minecraft Servers** that provides an efficie
 - Players can toggle chat on/off.
 - Full permission support so that you can limit who has access to what colors / features.
 - Allows the administrator to log whispers between players. (This might be against local law.)
+- Ghost blocking of file sharing links: the sender still sees his own message, but nobody else does.
 
 ## Source
 
@@ -68,6 +69,24 @@ the changes take effect.
 Color codes and prefixes can be disabled by replacing the contents with NULL e.g. GREEN: NULL.
 Usage of color codes and prefixes can be restricted by using permissions.
 You can customize the appearance of whispers.
+
+## Link Blocking
+
+Messages that contain one of the file sharing domains listed in `/ChatCo/blockedDomains.txt` are ghost blocked: the
+sender sees his own message exactly like a normal one, but it never reaches the other players, the console or any other
+plugin (the chat event is cancelled). The sender is not told about it.
+
+- The domain list is a plain text file, one domain per line, `#` starts a comment. Lines that are not a domain are
+  ignored with a warning, so a typo cannot turn a normal word into a blocked one.
+- Subdomains are covered as well, so `files.catbox.moe` is blocked by the entry `catbox.moe`.
+- Common ways of hiding a domain are covered too, e.g. `mega[.]nz`, `mega(dot)nz`, `mega dot nz`, `mega , nz`, color
+  codes in between and invisible unicode characters.
+- Whispers are filtered as well, this can be turned off with `ChatCo.linkBlock.blockWhispers: false`.
+- Blocked messages can be written to the server log with `ChatCo.linkBlock.logToConsole: true`, off by default.
+- Players with the permission `ChatCo.linkBlock.bypass` (default: op) are not filtered.
+- The whole feature can be turned off with `ChatCo.linkBlock.enabled: false`.
+
+Use `/chatco reload` after editing the domain list.
 
 ## Examples
 

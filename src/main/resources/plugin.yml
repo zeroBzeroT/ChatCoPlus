@@ -47,6 +47,9 @@ commands:
     aliases:
       - r
 permissions:
+  ChatCo.linkBlock.bypass:
+    description: Allows you to post links that are ghost blocked for everyone else
+    default: op
   ChatCo.chatPrefixes.GREEN:
     description: Allows you to use to use Green prefixes in chat
     default: false
