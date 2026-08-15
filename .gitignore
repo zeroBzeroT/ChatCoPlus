@@ -19,6 +19,7 @@ out/
 
 # Package Files #
 *.jar
+!gradle/wrapper/gradle-wrapper.jar
 *.war
 *.nar
 *.ear
@@ -95,19 +96,9 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-target/
-
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-.mvn/timing.properties
-.mvn/wrapper/maven-wrapper.jar
-.flattened-pom.xml
+# Gradle
+.gradle/
+build/
 
 # Common working directory
 run/
