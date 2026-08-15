@@ -28,7 +28,7 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:$minecraftVersion-R0.1-SNAPSHOT")
     compileOnly("dev.folia:folia-api:$minecraftVersion-R0.1-SNAPSHOT")
-    implementation("org.bstats:bstats-bukkit:3.1.0")
+    implementation("org.bstats:bstats-bukkit:3.2.1")
     implementation("redis.clients:jedis:5.1.3")
 }
 
