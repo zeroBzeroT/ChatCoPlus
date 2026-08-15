@@ -66,7 +66,7 @@ public record Whispers(Main plugin) {
 
         // Ghost blocked links: only the sender sees his own message
         final boolean linkBlocked = plugin.getConfig().getBoolean("ChatCo.linkBlock.blockWhispers", true)
-                && plugin.getLinkBlocker().isBlocked(sender, message);
+                && plugin.getDomainBlocker().isBlocked(sender, message);
 
         if (target != null && target.tellsDisabled) {
             doNotSend = true;
@@ -88,7 +88,7 @@ public record Whispers(Main plugin) {
 
         if (linkBlocked) {
             // No hint for the sender that his whisper was dropped
-            plugin.getLinkBlocker().log(sender, "Whisper to " + receiver.getName(), message);
+            plugin.getDomainBlocker().log(sender, "Whisper to " + receiver.getName(), message);
         } else if (isIgnoring && plugin.getConfig().getBoolean("ChatCo.ignoreMessageEnabled", true)) {
             sender.sendMessage(Component.text(receiver.getName() + " is ignoring you.", NamedTextColor.RED));
         } else if (doNotSend && plugin.getConfig().getBoolean("ChatCo.chatDisabledMessageEnabled", true)) {

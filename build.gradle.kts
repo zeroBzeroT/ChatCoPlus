@@ -29,6 +29,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:$minecraftVersion-R0.1-SNAPSHOT")
     compileOnly("dev.folia:folia-api:$minecraftVersion-R0.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.1.0")
+    implementation("redis.clients:jedis:5.1.3")
 }
 
 // Replaces ${project.version} / ${project.description} in the plugin resources,
@@ -54,6 +55,7 @@ tasks.shadowJar {
         attributes("Built-By" to "bierdosenhalter")
     }
     relocate("org.bstats", "org.zeroBzeroT.bstats")
+    relocate("redis.clients", "org.zeroBzeroT.chatCo.shaded.redis")
     exclude("META-INF/maven/**", "META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA")
 }
 

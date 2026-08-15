@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -27,9 +28,20 @@ public class Main extends JavaPlugin {
     public static File WhisperLog;
     public static File dataFolder;
     private static File Help;
+    public static File WordListFile;
+    public static File WhiteListFile;
     public Collection<ChatPlayer> playerList;
-    private LinkBlocker linkBlocker;
+    private DomainBlocker domainBlocker;
     private Whispers whispers;
+    private WordFilter wordFilter;
+    private LinkBlocker linkBlocker;
+    private int thresholdHours;
+    private PublicChat publicChat;
+    private static Main instance;
+
+    public static Main getInstance() {
+        return instance;
+    }
 
     @Override
     public void onDisable() {
@@ -38,6 +50,7 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        instance = this;
         playerList = Collections.synchronizedCollection(new ArrayList<>());
 
         // Config defaults
@@ -46,12 +59,15 @@ public class Main extends JavaPlugin {
 
         saveResourceFiles();
         toggleConfigValue(0);
+        loadFilters();
+        reloadGateConfig();
 
-        linkBlocker = new LinkBlocker(this);
+        domainBlocker = new DomainBlocker(this);
 
         final PluginManager pm = getServer().getPluginManager();
 
-        pm.registerEvents(new PublicChat(this), this);
+        publicChat = new PublicChat(this);
+        pm.registerEvents(publicChat, this);
 
         if (getConfig().getBoolean("ChatCo.whisperChangesEnabled", true)) {
             whispers = new Whispers(this);
@@ -64,6 +80,46 @@ public class Main extends JavaPlugin {
         // Load Plugin Metrics
         if (getConfig().getBoolean("ChatCo.bStats", true)) {
             new Metrics(this, 16309);
+        }
+    }
+
+    public void loadFilters() {
+        if (wordFilter == null) wordFilter = new WordFilter();
+        if (linkBlocker == null) linkBlocker = new LinkBlocker();
+        boolean fuzzy = getConfig().getBoolean("ChatCo.playtimeGate.wordFilter.fuzzy", false);
+        String replacement = getConfig().getString("ChatCo.playtimeGate.wordFilter.replacement", "bobba");
+        wordFilter.load(WordListFile, WhiteListFile, fuzzy, replacement);
+        String linkRepl = getConfig().getString("ChatCo.playtimeGate.linkBlock.replacement", "[link removed]");
+        linkBlocker.load(WhiteListFile, linkRepl);
+    }
+
+    public void reloadGateConfig() {
+        thresholdHours = getConfig().getInt("ChatCo.playtimeGate.thresholdHours", 10);
+    }
+
+    public WordFilter getWordFilter() {
+        return wordFilter;
+    }
+
+    public LinkBlocker getLinkBlocker() {
+        return linkBlocker;
+    }
+
+    public boolean isGated(org.bukkit.entity.Player player) {
+        if (thresholdHours == 0) return false;
+        if (thresholdHours < 0) return true;
+        int hours = getPlaytimeHours(player.getUniqueId());
+        return hours < thresholdHours;
+    }
+
+    private int getPlaytimeHours(UUID uuid) {
+        String key = "player." + uuid + ".playtime";
+        java.util.Optional<String> value = Redis.readSync(key);
+        if (value.isEmpty()) return 0;
+        try {
+            return Integer.parseInt(value.get());
+        } catch (NumberFormatException e) {
+            return 0;
         }
     }
 
@@ -106,6 +162,8 @@ public class Main extends JavaPlugin {
         Main.BlockedDomains = new File(Main.dataFolder, "blockedDomains.txt");
         Main.WhisperLog = new File(Main.dataFolder, "whisperlog.txt");
         Main.Help = new File(Main.dataFolder, "help.txt");
+        Main.WordListFile = new File(Main.dataFolder, "wordlist.txt");
+        Main.WhiteListFile = new File(Main.dataFolder, "whitelist.txt");
 
         if (!Main.WhisperLog.exists()) {
             Main.WhisperLog.getParentFile().mkdirs();
@@ -115,6 +173,16 @@ public class Main extends JavaPlugin {
         if (!Main.Help.exists()) {
             Main.Help.getParentFile().mkdirs();
             saveStreamToFile(getResource("help.txt"), Main.Help);
+        }
+
+        if (!Main.WordListFile.exists()) {
+            Main.WordListFile.getParentFile().mkdirs();
+            saveStreamToFile(getResource("wordlist.txt"), Main.WordListFile);
+        }
+
+        if (!Main.WhiteListFile.exists()) {
+            Main.WhiteListFile.getParentFile().mkdirs();
+            saveStreamToFile(getResource("whitelist.txt"), Main.WhiteListFile);
         }
 
         // Save the default config file, if it does not exist
@@ -213,7 +281,10 @@ public class Main extends JavaPlugin {
             if (args.length > 0 && args[0].equalsIgnoreCase("reload")) {
                 reloadConfig();
                 saveConfig();
-                linkBlocker.reload();
+                domainBlocker.reload();
+                loadFilters();
+                reloadGateConfig();
+                if (publicChat != null) publicChat.reload();
                 sender.sendMessage("Config reloaded");
                 return true;
             }
@@ -266,8 +337,8 @@ public class Main extends JavaPlugin {
         return false;
     }
 
-    public LinkBlocker getLinkBlocker() {
-        return linkBlocker;
+    public DomainBlocker getDomainBlocker() {
+        return domainBlocker;
     }
 
     public ChatPlayer getChatPlayer(final Player p) {
