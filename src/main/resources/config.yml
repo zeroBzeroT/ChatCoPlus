@@ -64,3 +64,27 @@ ChatCo:
     underline: null
     white: null
     yellow: null
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+
+  playtimeGate:
+    thresholdHours: 10
+
+    wordFilter:
+      enabled: true
+      # set to "" to delete the matched word entirely
+      replacement: "*"
+      fuzzy: false
+
+    rulesNotice:
+      enabled: true
+      message: |-
+        &6Please follow the community standards:
+        &9https://www.minecraft.net/en-us/community-standards
+
+    linkBlock:
+      enabled: true
+      # set to "" to delete the URL entirely
+      replacement: "[link removed]"
