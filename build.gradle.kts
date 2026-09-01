@@ -29,7 +29,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:$minecraftVersion-R0.1-SNAPSHOT")
     compileOnly("dev.folia:folia-api:$minecraftVersion-R0.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.1.0")
-    implementation("redis.clients:jedis:5.1.3")
+    implementation("redis.clients:jedis:8.0.1")
 }
 
 // Replaces ${project.version} / ${project.description} in the plugin resources,
