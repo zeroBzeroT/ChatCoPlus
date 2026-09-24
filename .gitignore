@@ -100,5 +100,9 @@ $RECYCLE.BIN/
 .gradle/
 build/
 
+target/
+
+bin/
+
 # Common working directory
 run/
