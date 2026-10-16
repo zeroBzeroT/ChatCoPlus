@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 import org.bstats.bukkit.Metrics;
@@ -261,20 +260,7 @@ public class Main extends JavaPlugin {
             } else if (whispers != null && whispers.onCommand(this, sender, cmd, commandLabel, args)) {
                 // Command was processed by the whisper module
                 return true;
-            } else if (cmd.getName().equalsIgnoreCase("whoignore")) {
-                List<String> ignoredByList = getChatPlayer((Player) sender).getIgnoredByList();
-            
-                if (ignoredByList.isEmpty()) {
-                    sender.sendMessage(Component.text("No one is ignoring you.", NamedTextColor.YELLOW));
-                } else {
-                    sender.sendMessage(Component.text("Players ignoring you:", NamedTextColor.YELLOW));
-                    for (String name : ignoredByList) {
-                        sender.sendMessage(Component.text(name, NamedTextColor.RED));
-                    }
-                }
-                return true;
             }
-            
         }
 
         if (cmd.getName().equalsIgnoreCase("chatco")) {
